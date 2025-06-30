@@ -22,7 +22,7 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
   try {
     // Use a simple query with timeout to test connection
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // Reduced to 5 seconds
     
     const { error } = await supabase
       .from('users')
@@ -48,6 +48,33 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
   }
 };
 
+// Custom fetch function with better error handling
+const customFetch = async (url: string, options: any = {}) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    
+    // Provide more specific error messages
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout - please check your connection');
+    } else if (error.message?.includes('Failed to fetch')) {
+      throw new Error('Network error - unable to reach Supabase');
+    } else {
+      throw error;
+    }
+  }
+};
+
 try {
   if (isSupabaseConnected) {
     supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -60,18 +87,7 @@ try {
         headers: {
           'Content-Type': 'application/json',
         },
-        fetch: (url, options = {}) => {
-          // Add timeout to all requests
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-          
-          return fetch(url, {
-            ...options,
-            signal: controller.signal,
-          }).finally(() => {
-            clearTimeout(timeoutId);
-          });
-        },
+        fetch: customFetch,
       },
     });
   } else {

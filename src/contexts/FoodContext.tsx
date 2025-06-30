@@ -41,7 +41,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
   const testConnection = async () => {
     if (!isSupabaseConnected) {
       setConnectionStatus('disconnected');
-      toast.error('Supabase not configured. Please check your environment variables.');
+      toast.error('Supabase not configured. Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
       return;
     }
 
@@ -50,7 +50,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     setConnectionStatus(isConnected ? 'connected' : 'disconnected');
     
     if (!isConnected) {
-      toast.error('Unable to connect to database. Please check your Supabase configuration and internet connection.');
+      toast.error('Unable to connect to Supabase. Please verify your project URL and API key in the .env file.');
     } else {
       toast.success('Database connection established!');
     }
@@ -74,7 +74,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       
       // Create abort controller for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000); // Reduced timeout
       
       const { data, error } = await supabase
         .from('food_entries')
@@ -90,18 +90,21 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         console.error('Supabase error:', error);
         
         // Handle specific error types with more detailed messages
-        if (error.message?.includes('Failed to fetch')) {
-          toast.error('Network error: Unable to reach database. Please check your internet connection.');
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
+          toast.error('Connection failed. Please check your Supabase project status and .env configuration.');
           setConnectionStatus('disconnected');
         } else if (error.message?.includes('timeout') || error.message?.includes('aborted')) {
-          toast.error('Request timed out. Please try again.');
+          toast.error('Request timed out. Please check your connection.');
           setConnectionStatus('disconnected');
         } else if (error.message?.includes('CORS')) {
-          toast.error('Configuration error: Please check your Supabase project settings.');
+          toast.error('CORS error: Please check your Supabase project settings.');
           setConnectionStatus('disconnected');
         } else if (error.message?.includes('JWT') || error.message?.includes('auth')) {
           // Auth errors don't necessarily mean connection is bad
           console.log('Authentication error, but connection may be OK');
+        } else if (error.message?.includes('not connected')) {
+          toast.error('Database not connected. Please check your Supabase configuration.');
+          setConnectionStatus('disconnected');
         } else {
           toast.error(`Database error: ${error.message}`);
           setConnectionStatus('disconnected');
@@ -117,10 +120,10 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching food entries:', error);
       
       if (error.name === 'AbortError') {
-        toast.error('Request timed out. Please check your connection and try again.');
+        toast.error('Request timed out. Please check your connection and Supabase configuration.');
         setConnectionStatus('disconnected');
-      } else if (error.message?.includes('Failed to fetch')) {
-        toast.error('Network error: Unable to reach database. Please check your internet connection.');
+      } else if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
+        toast.error('Connection failed. Please verify your Supabase project URL and API key.');
         setConnectionStatus('disconnected');
       } else if (error.message?.includes('NetworkError')) {
         toast.error('Network error: Please check your internet connection.');
@@ -140,7 +143,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { data, error } = await supabase
         .from('custom_foods')
@@ -153,7 +156,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error fetching custom foods:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to load custom foods');
@@ -166,7 +169,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       setConnectionStatus('connected');
     } catch (error: any) {
       console.error('Error fetching custom foods:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       setCustomFoods([]);
@@ -178,7 +181,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { data, error } = await supabase
         .from('food_entries')
@@ -192,7 +195,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error fetching recent foods:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to load recent foods');
@@ -210,7 +213,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       setConnectionStatus('connected');
     } catch (error: any) {
       console.error('Error fetching recent foods:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       setRecentFoods([]);
@@ -225,7 +228,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { error } = await supabase
         .from('food_entries')
@@ -239,9 +242,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error adding food entry:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
-          toast.error('Network error: Unable to save food entry');
+          toast.error('Connection failed: Unable to save food entry');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to add food entry');
         }
@@ -254,7 +257,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       await fetchRecentFoods();
     } catch (error: any) {
       console.error('Error adding food entry:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       throw error;
@@ -266,7 +269,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { error } = await supabase
         .from('food_entries')
@@ -279,9 +282,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error updating food entry:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
-          toast.error('Network error: Unable to update food entry');
+          toast.error('Connection failed: Unable to update food entry');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to update food entry');
         }
@@ -293,7 +296,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       await fetchFoodEntries();
     } catch (error: any) {
       console.error('Error updating food entry:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       throw error;
@@ -305,7 +308,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { error } = await supabase
         .from('food_entries')
@@ -318,9 +321,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error deleting food entry:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
-          toast.error('Network error: Unable to delete food entry');
+          toast.error('Connection failed: Unable to delete food entry');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to delete food entry');
         }
@@ -332,7 +335,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       await fetchFoodEntries();
     } catch (error: any) {
       console.error('Error deleting food entry:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       throw error;
@@ -344,7 +347,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
 
       const { error } = await supabase
         .from('custom_foods')
@@ -358,9 +361,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('Error adding custom food:', error);
-        if (error.message?.includes('Failed to fetch')) {
+        if (error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
           setConnectionStatus('disconnected');
-          toast.error('Network error: Unable to save custom food');
+          toast.error('Connection failed: Unable to save custom food');
         } else if (!error.message?.includes('JWT') && !error.message?.includes('auth')) {
           toast.error('Failed to save custom food');
         }
@@ -372,7 +375,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       await fetchCustomFoods();
     } catch (error: any) {
       console.error('Error adding custom food:', error);
-      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch')) {
+      if (error.name === 'AbortError' || error.message?.includes('Failed to fetch') || error.message?.includes('Network error')) {
         setConnectionStatus('disconnected');
       }
       throw error;
@@ -391,7 +394,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       });
     } else if (userProfile && !isSupabaseConnected) {
       setConnectionStatus('disconnected');
-      toast.error('Database not configured. Please check your Supabase settings.');
+      toast.error('Database not configured. Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
     }
   }, [userProfile]);
 

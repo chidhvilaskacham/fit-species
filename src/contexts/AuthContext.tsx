@@ -46,16 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         console.log('Initializing auth...');
         
-        // Get initial session with timeout
-        const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 10000)
-        );
-        
-        const { data: { session }, error } = await Promise.race([
-          sessionPromise,
-          timeoutPromise
-        ]) as any;
+        // Get initial session with reduced timeout
+        const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Session error:', error);
@@ -93,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.warn('Auth loading timeout - proceeding without auth');
         setLoading(false);
       }
-    }, 15000); // 15 seconds
+    }, 10000); // Reduced to 10 seconds
 
     initializeAuth();
 
@@ -137,21 +129,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Add timeout to profile fetch
-      const profilePromise = supabase
+      const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-        
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 10000)
-      );
-
-      const { data, error } = await Promise.race([
-        profilePromise,
-        timeoutPromise
-      ]) as any;
 
       if (error && error.code !== 'PGRST116') {
         console.error('Profile fetch error:', error);
