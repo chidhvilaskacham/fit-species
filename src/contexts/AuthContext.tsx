@@ -46,16 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         console.log('Initializing auth...');
         
-        // Get initial session with timeout
-        const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session timeout')), 6000) // Reduced timeout
-        );
-        
-        const { data: { session }, error } = await Promise.race([
-          sessionPromise,
-          timeoutPromise
-        ]) as any;
+        // Get initial session with longer timeout
+        const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Session error:', error);
@@ -93,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.warn('Auth loading timeout - proceeding without auth');
         setLoading(false);
       }
-    }, 10000); // Reduced timeout
+    }, 15000);
 
     initializeAuth();
 
@@ -137,33 +129,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Add timeout to profile fetch
-      const profilePromise = supabase
+      const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-        
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 6000) // Reduced timeout
-      );
-
-      const { data, error } = await Promise.race([
-        profilePromise,
-        timeoutPromise
-      ]) as any;
 
       if (error && error.code !== 'PGRST116') {
         console.error('Profile fetch error:', error);
-        
-        // Check for connection-related errors
-        if (error.message?.includes('Failed to fetch') || 
-            error.message?.includes('Network error') ||
-            error.message?.includes('not connected')) {
-          console.error('Connection issue detected during profile fetch');
-        }
-        
-        // Don't throw error, just set profile to null and continue
         setUserProfile(null);
         setLoading(false);
         return;
@@ -173,14 +146,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserProfile(data);
     } catch (error: any) {
       console.error('Profile fetch error:', error);
-      
-      // Handle timeout and connection errors gracefully
-      if (error.message?.includes('timeout') || 
-          error.message?.includes('Failed to fetch') ||
-          error.message?.includes('Network error')) {
-        console.error('Connection timeout or network error during profile fetch');
-      }
-      
       setUserProfile(null);
     } finally {
       setLoading(false);
@@ -225,7 +190,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { error } = await supabase.auth.signOut();
         
         // Always clear local state, even if server-side logout fails
-        // This handles cases where the session is already invalid on the server
         setUser(null);
         setUserProfile(null);
         

@@ -15,7 +15,7 @@ export const isSupabaseConnected = Boolean(
 
 let supabase: any;
 
-// Enhanced connection test with detailed diagnostics
+// Enhanced connection test with better error handling
 export const testSupabaseConnection = async (): Promise<boolean> => {
   if (!isSupabaseConnected) {
     console.error('Supabase credentials missing or invalid');
@@ -25,12 +25,11 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
   try {
     console.log('Testing connection to:', supabaseUrl);
     
-    // First, test basic connectivity to Supabase
-    const healthCheckUrl = `${supabaseUrl}/rest/v1/`;
+    // Test basic connectivity with a longer timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     
-    const healthResponse = await fetch(healthCheckUrl, {
+    const healthResponse = await fetch(`${supabaseUrl}/rest/v1/`, {
       method: 'GET',
       headers: {
         'apikey': supabaseAnonKey,
@@ -43,21 +42,12 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
     
     if (!healthResponse.ok) {
       console.error('Supabase health check failed:', healthResponse.status, healthResponse.statusText);
-      
-      if (healthResponse.status === 401) {
-        console.error('Authentication failed - check your VITE_SUPABASE_ANON_KEY');
-      } else if (healthResponse.status === 404) {
-        console.error('Project not found - check your VITE_SUPABASE_URL');
-      } else if (healthResponse.status === 403) {
-        console.error('Access forbidden - your project might be paused or have restrictions');
-      }
-      
       return false;
     }
     
     console.log('Basic connectivity test passed');
     
-    // Now test a simple database query
+    // Test a simple database query with the actual client
     const { error } = await supabase
       .from('users')
       .select('id')
@@ -66,16 +56,13 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
     if (error) {
       console.error('Database query test failed:', error);
       
+      // Auth errors are expected when not logged in - connection is still working
       if (error.message?.includes('JWT') || error.message?.includes('auth')) {
         console.log('Auth error is expected when not logged in - connection is working');
         return true;
-      } else if (error.message?.includes('relation') || error.message?.includes('does not exist')) {
-        console.error('Database schema issue - tables may not exist');
-        return false;
-      } else {
-        console.error('Unexpected database error:', error.message);
-        return false;
       }
+      
+      return false;
     }
     
     console.log('Database connection test passed');
@@ -85,89 +72,13 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
     console.error('Supabase connection test failed:', error);
     
     if (error.name === 'AbortError') {
-      console.error('Connection timeout - Supabase project may be unreachable or slow');
+      console.error('Connection timeout - Supabase project may be unreachable');
     } else if (error.message?.includes('Failed to fetch')) {
       console.error('Network error - Check your internet connection and Supabase project status');
-    } else if (error.message?.includes('CORS')) {
-      console.error('CORS error - Check your Supabase project settings');
-    } else if (error.message?.includes('NetworkError')) {
-      console.error('Network error - Unable to reach Supabase servers');
     }
     
     return false;
   }
-};
-
-// Enhanced fetch function with better error handling and retry logic
-const customFetch = async (url: string, options: any = {}) => {
-  const maxRetries = 2;
-  let lastError: any;
-  
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // Increased timeout
-    
-    try {
-      console.log(`Fetch attempt ${attempt}/${maxRetries} to:`, url);
-      
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          ...options.headers,
-          'Cache-Control': 'no-cache',
-        },
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        console.error(`HTTP ${response.status}: ${response.statusText} for ${url}`);
-        
-        if (response.status === 401) {
-          throw new Error('Authentication failed - please check your Supabase API key');
-        } else if (response.status === 403) {
-          throw new Error('Access forbidden - your Supabase project may be paused or restricted');
-        } else if (response.status === 404) {
-          throw new Error('Resource not found - please check your Supabase project URL');
-        } else if (response.status >= 500) {
-          throw new Error('Supabase server error - please try again later');
-        }
-      }
-      
-      return response;
-      
-    } catch (error: any) {
-      clearTimeout(timeoutId);
-      lastError = error;
-      
-      console.error(`Fetch attempt ${attempt} failed:`, error.message);
-      
-      if (error.name === 'AbortError') {
-        lastError = new Error('Request timeout - Supabase may be unreachable. Please check your project status.');
-      } else if (error.message?.includes('Failed to fetch')) {
-        lastError = new Error('Network error - Unable to reach Supabase. Please check your internet connection and project URL.');
-      } else if (error.message?.includes('CORS')) {
-        lastError = new Error('CORS error - Please check your Supabase project settings and allowed origins.');
-      }
-      
-      // Don't retry on authentication or configuration errors
-      if (error.message?.includes('Authentication') || 
-          error.message?.includes('API key') ||
-          error.message?.includes('project URL') ||
-          error.message?.includes('CORS')) {
-        break;
-      }
-      
-      // Wait before retry (except on last attempt)
-      if (attempt < maxRetries) {
-        console.log(`Retrying in ${attempt * 1000}ms...`);
-        await new Promise(resolve => setTimeout(resolve, attempt * 1000));
-      }
-    }
-  }
-  
-  throw lastError;
 };
 
 try {
@@ -185,7 +96,6 @@ try {
         headers: {
           'Content-Type': 'application/json',
         },
-        fetch: customFetch,
       },
       db: {
         schema: 'public',
