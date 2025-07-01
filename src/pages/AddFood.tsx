@@ -143,7 +143,6 @@ export default function AddFood() {
     setLoading(true);
     try {
       await addFoodEntry({
-        user_id: '', // This will be set by the context
         food_name: formData.foodName,
         quantity: formData.quantity,
         calories: parseFloat(formData.calories),
@@ -172,7 +171,6 @@ export default function AddFood() {
     try {
       const quantityNum = parseFloat(formData.quantity.replace(/\D/g, '') || '100');
       await addCustomFood({
-        user_id: '', // This will be set by the context
         name: formData.foodName,
         calories_per_100g: Math.round((parseFloat(formData.calories) / quantityNum) * 100),
         protein_per_100g: Math.round((parseFloat(formData.protein) / quantityNum) * 100),

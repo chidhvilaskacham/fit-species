@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { supabase, isSupabaseConnected, testSupabaseConnection } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 import { FoodEntry, CustomFood } from '../types';
@@ -10,10 +11,10 @@ interface FoodContextType {
   recentFoods: FoodEntry[];
   loading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'testing';
-  addFoodEntry: (entry: Omit<FoodEntry, 'id' | 'created_at'>) => Promise<void>;
+  addFoodEntry: (entry: Omit<FoodEntry, 'id' | 'created_at' | 'user_id'>) => Promise<void>;
   updateFoodEntry: (id: string, entry: Partial<FoodEntry>) => Promise<void>;
   deleteFoodEntry: (id: string) => Promise<void>;
-  addCustomFood: (food: Omit<CustomFood, 'id' | 'created_at'>) => Promise<void>;
+  addCustomFood: (food: Omit<CustomFood, 'id' | 'created_at' | 'user_id'>) => Promise<void>;
   fetchFoodEntries: (date?: string) => Promise<void>;
   fetchCustomFoods: () => Promise<void>;
   fetchRecentFoods: () => Promise<void>;
@@ -38,7 +39,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'testing'>('disconnected');
 
-  const testConnection = async () => {
+  const testConnection = useCallback(async () => {
     if (!isSupabaseConnected) {
       setConnectionStatus('disconnected');
       toast.error('Supabase not configured. Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
@@ -54,9 +55,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     } else {
       toast.success('Database connection established!');
     }
-  };
+  }, []);
 
-  const fetchFoodEntries = async (date?: string) => {
+  const fetchFoodEntries = useCallback(async (date?: string) => {
     if (!userProfile) {
       console.log('Skipping fetch - no user profile');
       return;
@@ -122,9 +123,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       setFoodEntries([]);
     }
     setLoading(false);
-  };
+  }, [userProfile]);
 
-  const fetchCustomFoods = async () => {
+  const fetchCustomFoods = useCallback(async () => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -149,9 +150,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching custom foods:', error);
       setCustomFoods([]);
     }
-  };
+  }, [userProfile]);
 
-  const fetchRecentFoods = async () => {
+  const fetchRecentFoods = useCallback(async () => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -172,8 +173,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       }
       
       // Remove duplicates based on food_name
-      const uniqueRecentFoods = data?.filter((food, index, self) =>
-        index === self.findIndex((f) => f.food_name === food.food_name)
+      const uniqueRecentFoods = data?.filter(
+        (food: FoodEntry, index: number, self: FoodEntry[]) =>
+          index === self.findIndex((f: FoodEntry) => f.food_name === food.food_name)
       ).slice(0, 10) || [];
       
       setRecentFoods(uniqueRecentFoods);
@@ -182,9 +184,9 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching recent foods:', error);
       setRecentFoods([]);
     }
-  };
+  }, [userProfile]);
 
-  const addFoodEntry = async (entry: Omit<FoodEntry, 'id' | 'created_at'>) => {
+  const addFoodEntry = useCallback(async (entry: Omit<FoodEntry, 'id' | 'created_at' | 'user_id'>) => {
     if (!userProfile || !isSupabaseConnected) {
       toast.error('Please connect to database first');
       return;
@@ -203,18 +205,16 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         toast.error('Failed to add food entry');
         throw error;
       }
-      
-      toast.success('Food entry added successfully!');
-      setConnectionStatus('connected');
-      await fetchFoodEntries(entry.date);
+      // No need to refetch, real-time subscription will handle it.
+      // We still fetch recent foods as that's a separate list.
       await fetchRecentFoods();
     } catch (error: any) {
       console.error('Error adding food entry:', error);
       throw error;
     }
-  };
+  }, [userProfile, fetchRecentFoods]);
 
-  const updateFoodEntry = async (id: string, entry: Partial<FoodEntry>) => {
+  const updateFoodEntry = useCallback(async (id: string, entry: Partial<FoodEntry>) => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -229,17 +229,14 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         toast.error('Failed to update food entry');
         throw error;
       }
-      
-      toast.success('Food entry updated!');
-      setConnectionStatus('connected');
-      await fetchFoodEntries();
+      // No need to refetch, real-time subscription will handle it.
     } catch (error: any) {
       console.error('Error updating food entry:', error);
       throw error;
     }
-  };
+  }, [userProfile]);
 
-  const deleteFoodEntry = async (id: string) => {
+  const deleteFoodEntry = useCallback(async (id: string) => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -254,17 +251,14 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         toast.error('Failed to delete food entry');
         throw error;
       }
-      
-      toast.success('Food entry deleted');
-      setConnectionStatus('connected');
-      await fetchFoodEntries();
+      // No need to refetch, real-time subscription will handle it.
     } catch (error: any) {
       console.error('Error deleting food entry:', error);
       throw error;
     }
-  };
+  }, [userProfile]);
 
-  const addCustomFood = async (food: Omit<CustomFood, 'id' | 'created_at'>) => {
+  const addCustomFood = useCallback(async (food: Omit<CustomFood, 'id' | 'created_at' | 'user_id'>) => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -280,31 +274,94 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         toast.error('Failed to save custom food');
         throw error;
       }
-      
-      toast.success('Custom food saved!');
-      setConnectionStatus('connected');
-      await fetchCustomFoods();
+      // No need to refetch, real-time subscription will handle it.
     } catch (error: any) {
       console.error('Error adding custom food:', error);
       throw error;
     }
-  };
+  }, [userProfile]);
 
   useEffect(() => {
     if (userProfile && isSupabaseConnected) {
-      // Test connection first, then fetch data
-      testConnection().then(() => {
-        if (connectionStatus !== 'disconnected') {
-          fetchFoodEntries();
-          fetchCustomFoods();
-          fetchRecentFoods();
-        }
-      });
+      // Test connection when user profile is available.
+      // Data fetching will be triggered by the connectionStatus change.
+      testConnection();
     } else if (userProfile && !isSupabaseConnected) {
       setConnectionStatus('disconnected');
       toast.error('Database not configured. Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
     }
-  }, [userProfile]);
+  }, [userProfile, testConnection]);
+
+  useEffect(() => {
+    // Fetch data once the connection is confirmed to be 'connected' and we have a user.
+    if (connectionStatus === 'connected' && userProfile) {
+      const today = new Date().toISOString().split('T')[0];
+      fetchFoodEntries(today);
+      fetchCustomFoods();
+      fetchRecentFoods();
+    }
+  }, [connectionStatus, userProfile, fetchFoodEntries, fetchCustomFoods, fetchRecentFoods]);
+
+  // Real-time subscriptions
+  useEffect(() => {
+    if (connectionStatus !== 'connected' || !userProfile) {
+      return;
+    }
+
+    // Subscribe to food_entries changes
+    const foodEntriesSubscription = supabase
+      .channel('food_entries_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'food_entries', filter: `user_id=eq.${userProfile.id}` },
+        (payload: RealtimePostgresChangesPayload<FoodEntry>) => {
+          console.log('Realtime food entry change received!', payload);
+          const { eventType, new: newRecord, old: oldRecord } = payload;
+          
+          if (eventType === 'INSERT') {
+            toast.success(`New food added: ${newRecord.food_name}`);
+            setFoodEntries(current => [...current, newRecord as FoodEntry].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
+          }
+          if (eventType === 'UPDATE') {
+            toast.success(`Updated: ${newRecord.food_name}`);
+            setFoodEntries(current => current.map(entry => entry.id === newRecord.id ? { ...entry, ...newRecord } : entry));
+          }
+          if (eventType === 'DELETE') {
+            toast.error(`Removed: ${oldRecord.food_name}`);
+            setFoodEntries(current => current.filter(entry => entry.id !== oldRecord.id));
+          }
+        }
+      )
+      .subscribe();
+
+    // Subscribe to custom_foods changes
+    const customFoodsSubscription = supabase
+      .channel('custom_foods_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'custom_foods', filter: `user_id=eq.${userProfile.id}` },
+        (payload: RealtimePostgresChangesPayload<CustomFood>) => {
+          console.log('Realtime custom food change received!', payload);
+          const { eventType, new: newRecord, old: oldRecord } = payload;
+
+          if (eventType === 'INSERT') {
+            setCustomFoods(current => [newRecord as CustomFood, ...current]);
+          }
+          if (eventType === 'UPDATE') {
+            setCustomFoods(current => current.map(food => food.id === newRecord.id ? { ...food, ...newRecord } : food));
+          }
+          if (eventType === 'DELETE') {
+            setCustomFoods(current => current.filter(food => food.id !== oldRecord.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(foodEntriesSubscription);
+      supabase.removeChannel(customFoodsSubscription);
+    };
+  }, [connectionStatus, userProfile]);
 
   const value = {
     foodEntries,
