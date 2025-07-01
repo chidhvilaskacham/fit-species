@@ -57,7 +57,7 @@ export default function Progress() {
       if (error) throw error;
 
       // Group by date and sum nutrition values
-      const groupedData = (data || []).reduce((acc: any, entry) => {
+      const groupedData = (data || []).reduce((acc: any, entry: { date: string; calories: number; protein: number; carbs: number; fat: number }) => {
         const date = entry.date;
         if (!acc[date]) {
           acc[date] = {
@@ -120,9 +120,12 @@ export default function Progress() {
 
   const currentWeight = weightEntries.length > 0 ? weightEntries[weightEntries.length - 1].weight : null;
 
+  // Helper for weight goal line
+  const weightGoal = userProfile?.weight_goal || null;
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen" aria-busy="true" aria-live="polite">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
@@ -230,7 +233,7 @@ export default function Progress() {
           {/* Charts */}
           <div className="lg:col-span-2 space-y-8">
             {/* Weight Chart */}
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.4s' }} aria-label="Weight Progress Chart" tabIndex={0}>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
                 <TrendingUp className="h-5 w-5 mr-2" />
                 Weight Progress
@@ -239,14 +242,15 @@ export default function Progress() {
               {weightEntries.length > 0 ? (
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={weightEntries}>
+                    <LineChart data={weightEntries} aria-label="Weight Trend Line Chart">
                       <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                       <XAxis 
                         dataKey="date" 
                         tickFormatter={(date) => format(parseISO(date), 'MMM d')}
                         className="text-gray-600 dark:text-gray-300"
+                        aria-label="Date axis"
                       />
-                      <YAxis className="text-gray-600 dark:text-gray-300" />
+                      <YAxis className="text-gray-600 dark:text-gray-300" aria-label="Weight axis" />
                       <Tooltip 
                         labelFormatter={(date) => format(parseISO(date), 'MMM d, yyyy')}
                         formatter={(value) => [`${value} lbs`, 'Weight']}
@@ -257,6 +261,8 @@ export default function Progress() {
                           borderRadius: '12px',
                           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                         }}
+                        cursor={{ stroke: '#22c55e', strokeWidth: 2 }}
+                        aria-label="Weight chart tooltip"
                       />
                       <Line 
                         type="monotone" 
@@ -265,7 +271,20 @@ export default function Progress() {
                         strokeWidth={3}
                         dot={{ r: 6, fill: '#22c55e' }}
                         activeDot={{ r: 8, fill: '#16a34a' }}
+                        aria-label="Weight trend line"
                       />
+                      {/* Goal line */}
+                      {weightGoal && (
+                        <Line
+                          type="stepAfter"
+                          dataKey={() => weightGoal}
+                          stroke="#f59e42"
+                          strokeDasharray="6 6"
+                          dot={false}
+                          isAnimationActive={false}
+                          aria-label="Weight goal line"
+                        />
+                      )}
                       <defs>
                         <linearGradient id="weightGradient" x1="0" y1="0" x2="1" y2="0">
                           <stop offset="0%" stopColor="#22c55e" />
@@ -285,7 +304,7 @@ export default function Progress() {
             </div>
 
             {/* Nutrition History Chart */}
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.5s' }} aria-label="Daily Calories Chart" tabIndex={0}>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
                 <Flame className="h-5 w-5 mr-2" />
                 Daily Calories (Last 30 Days)
@@ -294,14 +313,15 @@ export default function Progress() {
               {nutritionHistory.length > 0 ? (
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={nutritionHistory}>
+                    <BarChart data={nutritionHistory} aria-label="Calories Bar Chart">
                       <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                       <XAxis 
                         dataKey="date" 
                         tickFormatter={(date) => format(parseISO(date), 'M/d')}
                         className="text-gray-600 dark:text-gray-300"
+                        aria-label="Date axis"
                       />
-                      <YAxis className="text-gray-600 dark:text-gray-300" />
+                      <YAxis className="text-gray-600 dark:text-gray-300" aria-label="Calories axis" />
                       <Tooltip 
                         labelFormatter={(date) => format(parseISO(date), 'MMM d, yyyy')}
                         formatter={(value, name) => [
@@ -315,9 +335,12 @@ export default function Progress() {
                           borderRadius: '12px',
                           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
                         }}
+                        cursor={{ fill: '#22c55e', opacity: 0.2 }}
+                        aria-label="Calories chart tooltip"
                       />
-                      <Bar dataKey="goal" fill="#E5E7EB" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="calories" fill="url(#calorieGradient)" radius={[4, 4, 0, 0]} />
+                      {/* Goal bar */}
+                      <Bar dataKey="goal" fill="#E5E7EB" radius={[4, 4, 0, 0]} aria-label="Goal bar" />
+                      <Bar dataKey="calories" fill="url(#calorieGradient)" radius={[4, 4, 0, 0]} aria-label="Calories bar" />
                       <defs>
                         <linearGradient id="calorieGradient" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="#22c55e" />
@@ -338,48 +361,54 @@ export default function Progress() {
           </div>
 
           {/* Add Weight Form */}
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.6s' }}>
+          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.6s' }} aria-label="Log Weight Form">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
               <Plus className="h-5 w-5 mr-2" />
               Log Weight
             </h2>
             
-            <form onSubmit={handleAddWeight} className="space-y-6">
+            <form onSubmit={handleAddWeight} className="space-y-6" aria-label="Add Weight Entry Form">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="weight-date-input">
                   Date
                 </label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
+                    id="weight-date-input"
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors focus:outline-primary-500"
+                    aria-label="Weight entry date"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="weight-value-input">
                   Weight (lbs)
                 </label>
                 <input
+                  id="weight-value-input"
                   type="number"
                   step="0.1"
                   min="0"
                   required
                   value={newWeight}
                   onChange={(e) => setNewWeight(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors focus:outline-primary-500"
                   placeholder="Enter your weight"
+                  aria-label="Weight value"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={addingWeight}
-                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-primary-500"
+                aria-label="Add Weight Entry"
+                aria-busy={addingWeight}
               >
                 {addingWeight ? (
                   <div className="flex items-center justify-center space-x-2">

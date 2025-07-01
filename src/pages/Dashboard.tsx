@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Calendar, Plus, Target, TrendingUp, Flame, Activity, Sparkles, Award, Zap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,10 +6,11 @@ import { useFood } from '../contexts/FoodContext';
 import { NutritionSummary } from '../types';
 import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
+import { Tooltip } from 'react-tooltip'; // If not present, install a tooltip lib like react-tooltip
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
-  const { foodEntries, fetchFoodEntries, loading } = useFood();
+  const { foodEntries, fetchFoodEntries } = useFood();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [nutritionSummary, setNutritionSummary] = useState<NutritionSummary | null>(null);
 
@@ -53,15 +54,42 @@ export default function Dashboard() {
     return Math.min((nutritionSummary.total_calories / nutritionSummary.goal_calories) * 100, 100);
   };
 
-  const getMotivationalMessage = () => {
-    const progress = getCalorieProgress();
-    if (progress === 0) return "Ready to start your day? 🌟";
-    if (progress < 25) return "Great start! Keep going! 💪";
-    if (progress < 50) return "You're on fire! 🔥";
-    if (progress < 75) return "Almost there! 🎯";
-    if (progress < 100) return "So close to your goal! 🏆";
-    return "Goal achieved! Amazing! 🎉";
-  };
+  // Streak calculation (simple example: count consecutive days with entries)
+  const [streak, setStreak] = useState(0);
+  useEffect(() => {
+    if (!userProfile || !foodEntries.length) return;
+    let streakCount = 0;
+    let date = new Date(selectedDate);
+    for (let i = 0; i < 30; i++) {
+      const dateStr = format(date, 'yyyy-MM-dd');
+      if (foodEntries.some(entry => entry.date === dateStr)) {
+        streakCount++;
+        date.setDate(date.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    setStreak(streakCount);
+  }, [foodEntries, selectedDate, userProfile]);
+
+  // Rotating motivational messages
+  const motivationalMessages = [
+    'Ready to start your day? 🌟',
+    'Great start! Keep going! 💪',
+    "You're on fire! 🔥",
+    'Almost there! 🎯',
+    'So close to your goal! 🏆',
+    'Goal achieved! Amazing! 🎉',
+    'Consistency is key! Keep it up! 🔑',
+    'Every meal counts! 🍽️',
+  ];
+  const [bannerIndex, setBannerIndex] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBannerIndex(i => (i + 1) % motivationalMessages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (!userProfile) {
     return (
@@ -88,16 +116,28 @@ export default function Dashboard() {
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
                 <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white">
-                  Welcome back, {userProfile.name}! 
+                  Welcome back, {userProfile.name}!
                 </h1>
                 <div className="flex space-x-1">
                   <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
                   <Award className="h-6 w-6 text-emerald-500 animate-bounce" style={{ animationDelay: '0.5s' }} />
                 </div>
               </div>
-              <p className="text-lg text-neutral-600 dark:text-neutral-300">
-                {getMotivationalMessage()}
-              </p>
+              {/* Animated motivational banner */}
+              <div className="relative h-10">
+                <div className="absolute inset-0 flex items-center transition-opacity duration-700 animate-fade-in" key={bannerIndex} aria-live="polite">
+                  <p className="text-lg text-neutral-600 dark:text-neutral-300 font-semibold">
+                    {motivationalMessages[bannerIndex]}
+                  </p>
+                </div>
+              </div>
+              {/* Streak indicator */}
+              {streak > 1 && (
+                <div className="flex items-center space-x-2 mt-1" aria-label={`Streak: ${streak} days`}>
+                  <Zap className="h-5 w-5 text-yellow-400 animate-pulse" />
+                  <span className="text-emerald-600 dark:text-emerald-300 font-bold">{streak} day streak!</span>
+                </div>
+              )}
               <p className="text-neutral-500 dark:text-neutral-400">
                 Track your nutrition for {format(selectedDate, 'EEEE, MMMM d, yyyy')}
               </p>
@@ -122,7 +162,8 @@ export default function Dashboard() {
         {/* Nutrition Summary Cards */}
         {nutritionSummary && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left">
+            {/* Calories Card with tooltip */}
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary" data-tooltip-id="calories-tooltip">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Calories</p>
@@ -152,12 +193,13 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
-                  {nutritionSummary.remaining_calories > 0 
+                  {nutritionSummary.remaining_calories > 0
                     ? `${Math.round(nutritionSummary.remaining_calories)} remaining`
                     : `${Math.round(Math.abs(nutritionSummary.remaining_calories))} over goal`
                   }
                 </p>
               </div>
+              <Tooltip id="calories-tooltip" place="top" content="Click for weekly calorie insights!" />
             </div>
 
             <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.1s' }}>

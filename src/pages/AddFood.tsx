@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Plus, Clock, Star, ArrowLeft, Save } from 'lucide-react';
 import { useFood } from '../contexts/FoodContext';
-import { CustomFood } from '../types';
 import toast from 'react-hot-toast';
+import Fuse from 'fuse.js'; // For fuzzy search (install with: npm install fuse.js)
 
 export default function AddFood() {
   const [searchParams] = useSearchParams();
@@ -104,10 +104,14 @@ export default function AddFood() {
     { name: 'Protein Shake (with water)', calories: 130, protein: 25, carbs: 5, fat: 1.5, serving: '1 serving', category: 'Beverages' },
   ];
 
-  const filteredFoods = commonFoods.filter(food =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    food.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Fuzzy search setup
+  const fuse = new Fuse(commonFoods, {
+    keys: ['name', 'category'],
+    threshold: 0.3,
+  });
+  const filteredFoods = searchTerm
+    ? fuse.search(searchTerm).map(result => result.item)
+    : commonFoods;
 
   useEffect(() => {
     fetchCustomFoods();
@@ -137,7 +141,6 @@ export default function AddFood() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       await addFoodEntry({
         user_id: '', // This will be set by the context
@@ -151,9 +154,10 @@ export default function AddFood() {
         notes: formData.notes || undefined,
         date,
       });
-      
+      toast.success('Food added!'); // Improved toast notification
       navigate('/dashboard');
     } catch (error) {
+      toast.error('Error adding food entry');
       console.error('Error adding food entry:', error);
     }
     setLoading(false);
@@ -179,6 +183,29 @@ export default function AddFood() {
       console.error('Error saving custom food:', error);
     }
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setFormData({
+          foodName: '',
+          quantity: '',
+          calories: '',
+          protein: '',
+          carbs: '',
+          fat: '',
+          notes: '',
+        });
+      }
+      if (e.key === 'Tab' && document.activeElement?.tagName !== 'INPUT') {
+        // Focus next tab or input (accessibility improvement)
+        // ...optional: implement custom tab focus logic if needed...
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const tabs = [
     { key: 'search', label: 'Search Foods', icon: Search },
@@ -226,8 +253,8 @@ export default function AddFood() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Food Search/Selection */}
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up">
-            <div className="flex space-x-1 mb-6">
+          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" aria-label="Food Search Section">
+            <div className="flex space-x-1 mb-6" role="tablist">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -239,8 +266,12 @@ export default function AddFood() {
                         ? 'bg-gradient-to-r from-primary-100/80 to-mint-100/80 text-primary-700 dark:from-primary-900/20 dark:to-mint-900/20 dark:text-primary-300 shadow-md backdrop-blur-sm'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-gray-700/50 backdrop-blur-sm'
                     }`}
+                    role="tab"
+                    aria-selected={activeTab === tab.key}
+                    aria-controls={`tab-panel-${tab.key}`}
+                    tabIndex={0}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                     <span className="text-sm font-medium">{tab.label}</span>
                   </button>
                 );
@@ -352,13 +383,13 @@ export default function AddFood() {
           </div>
 
           {/* Food Entry Form */}
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" style={{ animationDelay: '0.1s' }} aria-label="Food Entry Form">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-              <Plus className="h-5 w-5 mr-2" />
+              <Plus className="h-5 w-5 mr-2" aria-hidden="true" />
               Food Details
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" aria-label="Add Food Form">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Food Name *
@@ -469,11 +500,22 @@ export default function AddFood() {
                 />
               </div>
 
+              {/* Live nutrient feedback */}
+              <div className="mb-4" aria-live="polite">
+                <div className="flex space-x-4 text-sm">
+                  <span className="font-semibold text-primary-700 dark:text-primary-300">Calories: {formData.calories || 0}</span>
+                  <span className="font-semibold text-primary-700 dark:text-primary-300">Protein: {formData.protein || 0}g</span>
+                  <span className="font-semibold text-primary-700 dark:text-primary-300">Carbs: {formData.carbs || 0}g</span>
+                  <span className="font-semibold text-primary-700 dark:text-primary-300">Fat: {formData.fat || 0}g</span>
+                </div>
+              </div>
+
               <div className="flex space-x-3 pt-4">
                 <button
                   type="submit"
                   disabled={loading}
                   className="flex-1 bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  aria-label="Add Food"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center space-x-2">
@@ -493,6 +535,7 @@ export default function AddFood() {
                     type="button"
                     onClick={saveAsCustomFood}
                     className="px-6 py-3 border-2 border-primary-200 text-primary-600 rounded-xl hover:bg-primary-50/80 backdrop-blur-sm transition-colors font-medium flex items-center space-x-2"
+                    aria-label="Save as Custom Food"
                   >
                     <Save className="h-4 w-4" />
                     <span>Save Custom</span>

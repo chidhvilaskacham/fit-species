@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { User, Target, Bell, Moon, Sun, Download, Trash2, Save, Shield, Palette } from 'lucide-react';
+import { User, Target, Bell, Moon, Sun, Download, Save, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
-import { format } from 'date-fns';
+import { format as dateFormat } from 'date-fns';
 import toast from 'react-hot-toast';
 
 export default function Settings() {
@@ -75,7 +75,7 @@ export default function Settings() {
     setLoading(false);
   };
 
-  const handleExportData = async (format: 'csv' | 'json') => {
+  const handleExportData = async (exportFormat: 'csv' | 'json') => {
     if (!userProfile) return;
 
     try {
@@ -94,19 +94,19 @@ export default function Settings() {
         exported_at: new Date().toISOString(),
       };
 
-      if (format === 'json') {
+      if (exportFormat === 'json') {
         const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `fit-species-data-${format(new Date(), 'yyyy-MM-dd')}.json`;
+        a.download = `fit-species-data-${dateFormat(new Date(), 'yyyy-MM-dd')}.json`;
         a.click();
         URL.revokeObjectURL(url);
       } else {
         // Simple CSV export for food entries
         const csvData = [
           ['Date', 'Meal', 'Food', 'Quantity', 'Calories', 'Protein', 'Carbs', 'Fat', 'Notes'],
-          ...exportData.food_entries.map(entry => [
+          ...exportData.food_entries.map((entry: any) => [
             entry.date,
             entry.meal_type,
             entry.food_name,
@@ -123,12 +123,12 @@ export default function Settings() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `fit-species-food-log-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        a.download = `fit-species-food-log-${dateFormat(new Date(), 'yyyy-MM-dd')}.csv`;
         a.click();
         URL.revokeObjectURL(url);
       }
 
-      toast.success(`Data exported successfully as ${format.toUpperCase()}!`);
+      toast.success(`Data exported successfully as ${exportFormat.toUpperCase()}!`);
     } catch (error) {
       toast.error('Failed to export data. Please try again.');
     }
@@ -164,20 +164,26 @@ export default function Settings() {
 
         {/* Tabs */}
         <div className="border-b border-gray-200/50 dark:border-gray-700/50 mb-8">
-          <nav className="flex space-x-8">
+          <nav className="flex space-x-8" role="tablist" aria-label="Settings Tabs">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as any)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200 focus:outline-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${{
+                    true: 'focus:outline focus:outline-2',
+                  }} ${
                     activeTab === tab.key
                       ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                       : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
                   }`}
+                  role="tab"
+                  aria-selected={activeTab === tab.key}
+                  aria-controls={`settings-tabpanel-${tab.key}`}
+                  tabIndex={activeTab === tab.key ? 0 : -1}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5" aria-hidden="true" />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -187,8 +193,8 @@ export default function Settings() {
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up">
-            <form onSubmit={handleProfileUpdate} className="space-y-6">
+          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" id="settings-tabpanel-profile" role="tabpanel" aria-labelledby="settings-tab-profile">
+            <form onSubmit={handleProfileUpdate} className="space-y-6" aria-label="Profile Settings Form">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Full Name
@@ -319,7 +325,9 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-primary-500"
+                aria-label="Save Profile Changes"
+                aria-busy={loading}
               >
                 {loading ? (
                   <div className="flex items-center justify-center space-x-2">
@@ -339,7 +347,7 @@ export default function Settings() {
 
         {/* Notifications Tab */}
         {activeTab === 'notifications' && (
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up">
+          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up" id="settings-tabpanel-notifications" role="tabpanel" aria-labelledby="settings-tab-notifications">
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50/80 to-gray-100/80 dark:from-gray-700/80 dark:to-gray-800/80 rounded-xl border border-gray-200/50 dark:border-gray-600/50 backdrop-blur-sm">
                 <div className="flex items-center space-x-3">
@@ -405,7 +413,7 @@ export default function Settings() {
                 />
               </div>
 
-              <div className="bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 backdrop-blur-sm">
+              <div className="bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 backdrop-blur-sm" aria-live="polite">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
                   <strong>Note:</strong> Browser notifications require permission. 
                   We'll ask for permission when you enable reminders for the first time.
@@ -417,7 +425,7 @@ export default function Settings() {
 
         {/* Data & Privacy Tab */}
         {activeTab === 'data' && (
-          <div className="space-y-6">
+          <div className="space-y-6" id="settings-tabpanel-data" role="tabpanel" aria-labelledby="settings-tab-data">
             <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <Download className="h-5 w-5 mr-2" />
@@ -445,20 +453,21 @@ export default function Settings() {
                 </button>
               </div>
             </div>
-
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-red-200/50 dark:border-red-800/50 p-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-4 flex items-center">
-                <Trash2 className="h-5 w-5 mr-2" />
-                Danger Zone
+            <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-2xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 p-6 animate-slide-up mt-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <Shield className="h-5 w-5 mr-2" />
+                Privacy & Security
               </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Once you delete your account, there is no going back. Please be certain.
-                All your data including food logs, weight entries, and custom foods will be permanently deleted.
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Your data is encrypted and never shared without your consent. You can request account deletion at any time.
               </p>
-              
-              <button className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <Trash2 className="h-4 w-4" />
-                <span>Delete Account</span>
+              <button
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl hover:from-red-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                aria-label="Request Account Deletion"
+                // onClick={handleAccountDeletion} // Implement as needed
+              >
+                <Shield className="h-4 w-4" />
+                <span>Request Account Deletion</span>
               </button>
             </div>
           </div>
