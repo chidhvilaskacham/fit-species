@@ -18,6 +18,7 @@ interface FoodContextType {
   fetchFoodEntries: (date?: string) => Promise<void>;
   fetchCustomFoods: () => Promise<void>;
   fetchRecentFoods: () => Promise<void>;
+  currentDate: string;
   testConnection: () => Promise<void>;
 }
 
@@ -37,6 +38,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
   const [customFoods, setCustomFoods] = useState<CustomFood[]>([]);
   const [recentFoods, setRecentFoods] = useState<FoodEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'testing'>('disconnected');
 
   const testConnection = useCallback(async () => {
@@ -72,6 +74,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const targetDate = date || new Date().toISOString().split('T')[0];
+      setCurrentDate(targetDate);
       
       console.log('Fetching food entries for date:', targetDate);
       
@@ -319,8 +322,11 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
           const { eventType, new: newRecord, old: oldRecord } = payload;
           
           if (eventType === 'INSERT') {
-            toast.success(`New food added: ${newRecord.food_name}`);
-            setFoodEntries(current => [...current, newRecord as FoodEntry].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
+            // Only add the entry to the current view if it's for the currently viewed date
+            if (newRecord.date === currentDate) {
+              toast.success(`New food added: ${newRecord.food_name}`);
+              setFoodEntries(current => [...current, newRecord as FoodEntry].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
+            }
           }
           if (eventType === 'UPDATE') {
             toast.success(`Updated: ${newRecord.food_name}`);
@@ -361,7 +367,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       supabase.removeChannel(foodEntriesSubscription);
       supabase.removeChannel(customFoodsSubscription);
     };
-  }, [connectionStatus, userProfile]);
+  }, [connectionStatus, userProfile, currentDate]);
 
   const value = {
     foodEntries,
@@ -376,6 +382,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     fetchFoodEntries,
     fetchCustomFoods,
     fetchRecentFoods,
+    currentDate,
     testConnection,
   };
 

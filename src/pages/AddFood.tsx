@@ -116,7 +116,7 @@ export default function AddFood() {
   useEffect(() => {
     fetchCustomFoods();
     fetchRecentFoods();
-  }, []);
+  }, [fetchCustomFoods, fetchRecentFoods]);
 
   const handleQuickAdd = (food: any) => {
     setFormData({
@@ -163,22 +163,40 @@ export default function AddFood() {
   };
 
   const saveAsCustomFood = async () => {
-    if (!formData.foodName) {
-      toast.error('Please enter a food name first');
+    if (!formData.foodName || !formData.calories || !formData.protein || !formData.carbs || !formData.fat || !formData.quantity) {
+      toast.error('Please fill out all nutrient fields to save a custom food.');
       return;
     }
 
     try {
-      const quantityNum = parseFloat(formData.quantity.replace(/\D/g, '') || '100');
+      // Use a regex that preserves decimal points
+      const quantityNum = parseFloat(formData.quantity.replace(/[^0-9.]/g, ''));
+      if (isNaN(quantityNum) || quantityNum === 0) {
+        toast.error('Please enter a valid quantity with a numeric value (e.g., 100g).');
+        return;
+      }
+
+      const caloriesNum = parseFloat(formData.calories);
+      const proteinNum = parseFloat(formData.protein);
+      const carbsNum = parseFloat(formData.carbs);
+      const fatNum = parseFloat(formData.fat);
+
+      if (isNaN(caloriesNum) || isNaN(proteinNum) || isNaN(carbsNum) || isNaN(fatNum)) {
+        toast.error('Nutrient values must be valid numbers.');
+        return;
+      }
+
       await addCustomFood({
         name: formData.foodName,
-        calories_per_100g: Math.round((parseFloat(formData.calories) / quantityNum) * 100),
-        protein_per_100g: Math.round((parseFloat(formData.protein) / quantityNum) * 100),
-        carbs_per_100g: Math.round((parseFloat(formData.carbs) / quantityNum) * 100),
-        fat_per_100g: Math.round((parseFloat(formData.fat) / quantityNum) * 100),
+        calories_per_100g: Math.round((caloriesNum / quantityNum) * 100),
+        protein_per_100g: Math.round((proteinNum / quantityNum) * 100),
+        carbs_per_100g: Math.round((carbsNum / quantityNum) * 100),
+        fat_per_100g: Math.round((fatNum / quantityNum) * 100),
       });
+      toast.success(`${formData.foodName} saved as a custom food!`);
     } catch (error) {
       console.error('Error saving custom food:', error);
+      toast.error('Failed to save custom food.');
     }
   };
 
