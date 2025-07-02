@@ -6,12 +6,17 @@ import { useFood } from '../contexts/FoodContext';
 import { NutritionSummary } from '../types';
 import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
+import WaterTracker from '../components/WaterTracker';
+import AchievementSystem from '../components/AchievementSystem';
+import MealPlanner from '../components/MealPlanner';
+import QuickStats from '../components/QuickStats';
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
   const { foodEntries, fetchFoodEntries } = useFood();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [nutritionSummary, setNutritionSummary] = useState<NutritionSummary | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'planner' | 'achievements'>('overview');
 
   useEffect(() => {
     if (userProfile) {
@@ -98,6 +103,12 @@ export default function Dashboard() {
     );
   }
 
+  const tabs = [
+    { key: 'overview', label: 'Overview', icon: Activity },
+    { key: 'planner', label: 'Meal Planner', icon: Calendar },
+    { key: 'achievements', label: 'Achievements', icon: Award },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50/50 via-teal-50/30 to-cyan-50/50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 relative overflow-hidden">
       {/* Animated background elements */}
@@ -158,141 +169,178 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Nutrition Summary Cards */}
-        {nutritionSummary && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Calories Card */}
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Calories</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white">
-                    {Math.round(nutritionSummary.total_calories)}
-                  </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    of {nutritionSummary.goal_calories} goal
-                  </p>
-                </div>
-                <div className="relative">
-                  <div className="p-4 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg">
-                    <Flame className="h-6 w-6 text-white" />
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <div className="flex space-x-1 bg-white/50 dark:bg-neutral-800/50 backdrop-blur-sm rounded-2xl p-1 border border-white/20 dark:border-neutral-700/30">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key as any)}
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-200 font-medium ${
+                    activeTab === tab.key
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-neutral-700/50'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Quick Stats and Water Tracker */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <QuickStats />
+              <WaterTracker />
+            </div>
+
+            {/* Nutrition Summary Cards */}
+            {nutritionSummary && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {/* Calories Card */}
+                <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Calories</p>
+                      <p className="text-3xl font-bold text-neutral-900 dark:text-white">
+                        {Math.round(nutritionSummary.total_calories)}
+                      </p>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                        of {nutritionSummary.goal_calories} goal
+                      </p>
+                    </div>
+                    <div className="relative">
+                      <div className="p-4 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg">
+                        <Flame className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="absolute -top-1 -right-1">
+                        <Zap className="h-4 w-4 text-yellow-400 animate-ping" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Zap className="h-4 w-4 text-yellow-400 animate-ping" />
+                  <div className="mt-4">
+                    <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-3 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-1000 ease-out relative"
+                        style={{ width: `${getCalorieProgress()}%` }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full"></div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
+                      {nutritionSummary.remaining_calories > 0
+                        ? `${Math.round(nutritionSummary.remaining_calories)} remaining`
+                        : `${Math.round(Math.abs(nutritionSummary.remaining_calories))} over goal`
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Protein</p>
+                      <p className="text-3xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-lg">P</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Carbs</p>
+                      <p className="text-3xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-lg">C</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Fat</p>
+                      <p className="text-3xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-lg">F</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="mt-4">
-                <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-1000 ease-out relative"
-                    style={{ width: `${getCalorieProgress()}%` }}
+            )}
+
+            {/* Nutrition Chart */}
+            {nutritionSummary && (
+              <div className="glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30 mb-8 card-hover animate-slide-in-bottom" style={{ animationDelay: '0.4s' }}>
+                <h2 className="text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+                  <Activity className="h-6 w-6 mr-3 text-emerald-500" />
+                  Macronutrient Breakdown
+                  <Sparkles className="h-5 w-5 ml-2 text-yellow-400 animate-pulse" />
+                </h2>
+                <NutritionChart nutritionSummary={nutritionSummary} />
+              </div>
+            )}
+
+            {/* Meals */}
+            <div className="space-y-8">
+              {mealTypes.map((meal, index) => (
+                <div key={meal.type} className="animate-slide-in-bottom" style={{ animationDelay: `${0.5 + index * 0.1}s` }}>
+                  <MealSection
+                    mealType={meal.type}
+                    mealLabel={meal.label}
+                    mealIcon={meal.icon}
+                    gradient={meal.gradient}
+                    entries={foodEntries.filter(entry => entry.meal_type === meal.type)}
+                    selectedDate={selectedDate}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mt-12 text-center animate-slide-in-bottom" style={{ animationDelay: '0.9s' }}>
+              <div className="inline-flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30">
+                <div className="flex items-center space-x-3">
+                  <Target className="h-6 w-6 text-emerald-500" />
+                  <span className="text-neutral-700 dark:text-neutral-300 font-semibold text-lg">Quick Actions:</span>
+                </div>
+                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                  <a
+                    href="/add-food"
+                    className="button-primary inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                    aria-label="Add food to your daily log"
                   >
-                    <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full"></div>
-                  </div>
-                </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
-                  {nutritionSummary.remaining_calories > 0
-                    ? `${Math.round(nutritionSummary.remaining_calories)} remaining`
-                    : `${Math.round(Math.abs(nutritionSummary.remaining_calories))} over goal`
-                  }
-                </p>
-              </div>
-            </div>
-
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Protein</p>
-                  <p className="text-3xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">P</span>
+                    <Plus className="h-5 w-5" />
+                    <span>Add Food</span>
+                  </a>
+                  <a
+                    href="/progress"
+                    className="button-secondary inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                    aria-label="View your progress and trends"
+                  >
+                    <TrendingUp className="h-5 w-5" />
+                    <span>View Progress</span>
+                  </a>
                 </div>
               </div>
             </div>
-
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Carbs</p>
-                  <p className="text-3xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">C</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Fat</p>
-                  <p className="text-3xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">F</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          </>
         )}
 
-        {/* Nutrition Chart */}
-        {nutritionSummary && (
-          <div className="glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30 mb-8 card-hover animate-slide-in-bottom" style={{ animationDelay: '0.4s' }}>
-            <h2 className="text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
-              <Activity className="h-6 w-6 mr-3 text-emerald-500" />
-              Macronutrient Breakdown
-              <Sparkles className="h-5 w-5 ml-2 text-yellow-400 animate-pulse" />
-            </h2>
-            <NutritionChart nutritionSummary={nutritionSummary} />
-          </div>
-        )}
-
-        {/* Meals */}
-        <div className="space-y-8">
-          {mealTypes.map((meal, index) => (
-            <div key={meal.type} className="animate-slide-in-bottom" style={{ animationDelay: `${0.5 + index * 0.1}s` }}>
-              <MealSection
-                mealType={meal.type}
-                mealLabel={meal.label}
-                mealIcon={meal.icon}
-                gradient={meal.gradient}
-                entries={foodEntries.filter(entry => entry.meal_type === meal.type)}
-                selectedDate={selectedDate}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mt-12 text-center animate-slide-in-bottom" style={{ animationDelay: '0.9s' }}>
-          <div className="inline-flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30">
-            <div className="flex items-center space-x-3">
-              <Target className="h-6 w-6 text-emerald-500" />
-              <span className="text-neutral-700 dark:text-neutral-300 font-semibold text-lg">Quick Actions:</span>
-            </div>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-              <a
-                href="/add-food"
-                className="button-primary inline-flex items-center justify-center space-x-2 min-w-[160px]"
-                aria-label="Add food to your daily log"
-              >
-                <Plus className="h-5 w-5" />
-                <span>Add Food</span>
-              </a>
-              <a
-                href="/progress"
-                className="button-secondary inline-flex items-center justify-center space-x-2 min-w-[160px]"
-                aria-label="View your progress and trends"
-              >
-                <TrendingUp className="h-5 w-5" />
-                <span>View Progress</span>
-              </a>
-            </div>
-          </div>
-        </div>
+        {activeTab === 'planner' && <MealPlanner />}
+        {activeTab === 'achievements' && <AchievementSystem />}
       </div>
     </div>
   );
