@@ -4,9 +4,10 @@ import { Home, PlusCircle, TrendingUp, Settings, LogOut, Activity, Menu, X, Spar
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useState } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 
 export default function Layout() {
-  const { signOut, userProfile } = useAuth();
+  const { signOut, userProfile, loading } = useAuth();
   const { darkMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +24,10 @@ export default function Layout() {
     await signOut();
     navigate('/login');
   };
+
+  if (loading) {
+    return <LoadingSpinner message="Loading profile..." />;
+  }
 
   return (
     <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
@@ -169,7 +174,7 @@ export default function Layout() {
                     <div>
                       <p className="text-sm font-semibold text-neutral-900 dark:text-white">Daily Goal</p>
                       <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                        {userProfile?.daily_calorie_goal || 2000} calories
+                        {userProfile?.daily_calorie_goal ? `${userProfile.daily_calorie_goal} calories` : 'Not set'}
                       </p>
                     </div>
                   </div>

@@ -3,6 +3,10 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { NutritionSummary } from '../types';
 import { Utensils, Sparkles } from 'lucide-react';
 
+const CALORIES_PER_GRAM_PROTEIN = 4;
+const CALORIES_PER_GRAM_CARBS = 4;
+const CALORIES_PER_GRAM_FAT = 9;
+
 interface NutritionChartProps {
   nutritionSummary: NutritionSummary;
 }
@@ -11,21 +15,21 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
   const data = [
     {
       name: 'Protein',
-      value: Math.round(Number(nutritionSummary.total_protein) * 4), // 4 calories per gram
+      value: Math.round(Number(nutritionSummary.total_protein) * CALORIES_PER_GRAM_PROTEIN),
       grams: Math.round(Number(nutritionSummary.total_protein)),
       color: '#3B82F6',
       gradient: 'from-blue-400 to-blue-600',
     },
     {
       name: 'Carbs',
-      value: Math.round(Number(nutritionSummary.total_carbs) * 4), // 4 calories per gram
+      value: Math.round(Number(nutritionSummary.total_carbs) * CALORIES_PER_GRAM_CARBS),
       grams: Math.round(Number(nutritionSummary.total_carbs)),
       color: '#F97316',
       gradient: 'from-orange-400 to-orange-600',
     },
     {
       name: 'Fat',
-      value: Math.round(Number(nutritionSummary.total_fat) * 9), // 9 calories per gram
+      value: Math.round(Number(nutritionSummary.total_fat) * CALORIES_PER_GRAM_FAT),
       grams: Math.round(Number(nutritionSummary.total_fat)),
       color: '#8B5CF6',
       gradient: 'from-purple-400 to-purple-600',

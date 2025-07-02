@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Clock, Sparkles, ChefHat } from 'lucide-react';
+import { Plus, Trash2, Clock, Sparkles, ChefHat, AlertCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FoodEntry } from '../types';
 import { useFood } from '../contexts/FoodContext';
@@ -24,6 +24,7 @@ export default function MealSection({
 }: MealSectionProps) {
   const { deleteFoodEntry } = useFood();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const totalCalories = entries.reduce((sum, entry) => sum + Number(entry.calories), 0);
   const totalProtein = entries.reduce((sum, entry) => sum + Number(entry.protein), 0);
@@ -32,10 +33,12 @@ export default function MealSection({
 
   const handleDeleteEntry = async (entryId: string) => {
     setDeletingId(entryId);
+    setError(null);
     try {
       await deleteFoodEntry(entryId);
     } catch (error) {
       console.error('Error deleting food entry:', error);
+      setError('Failed to delete entry. Please try again.');
     }
     setDeletingId(null);
   };
@@ -91,6 +94,16 @@ export default function MealSection({
             <span className="hidden sm:inline">Add Food</span>
           </Link>
         </div>
+
+        {error && (
+          <div className="bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-2xl relative mb-4 flex items-center space-x-2">
+            <AlertCircle className="h-5 w-5" />
+            <span>{error}</span>
+            <button onClick={() => setError(null)} className="absolute top-2 right-2 text-red-700 dark:text-red-300">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
 
         {entries.length === 0 ? (
           <div className="text-center py-12 bg-gradient-to-br from-neutral-50/50 to-neutral-100/50 dark:from-neutral-800/50 dark:to-neutral-700/50 rounded-3xl border-2 border-dashed border-neutral-300/50 dark:border-neutral-600/50 backdrop-blur-sm">

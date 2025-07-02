@@ -210,13 +210,11 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
       // No need to refetch, real-time subscription will handle it.
-      // We still fetch recent foods as that's a separate list.
-      await fetchRecentFoods();
     } catch (error) {
       console.error('Error adding food entry:', error);
       throw error;
     }
-  }, [userProfile, fetchRecentFoods]);
+  }, [userProfile]);
 
   const updateFoodEntry = useCallback(async (id: string, entry: Partial<FoodEntry>) => {
     if (!userProfile || !isSupabaseConnected) return;
@@ -323,11 +321,18 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
           const { eventType, new: newRecord, old: oldRecord } = payload;
           
           if (eventType === 'INSERT') {
-            // Only add the entry to the current view if it's for the currently viewed date
-            if (newRecord.date === currentDate) {
-              toast.success(`New food added: ${newRecord.food_name}`);
-              setFoodEntries(current => [...current, newRecord as FoodEntry].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
+            const newEntry = newRecord as FoodEntry;
+            // Update daily food entries if the new entry is for the currently viewed date
+            if (newEntry.date === currentDate) {
+              toast.success(`New food added: ${newEntry.food_name}`);
+              setFoodEntries(current => [...current, newEntry]);
             }
+            // Update recent foods list
+            setRecentFoods(current => {
+              const filtered = current.filter(f => f.food_name !== newEntry.food_name);
+              const updatedRecents = [newEntry, ...filtered];
+              return updatedRecents.slice(0, 10);
+            });
           }
           if (eventType === 'UPDATE') {
             toast.success(`Updated: ${newRecord.food_name}`);
