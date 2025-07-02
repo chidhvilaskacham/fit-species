@@ -7,11 +7,44 @@ import { NutritionSummary } from '../types';
 import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
 
+const calculateStreak = (foodEntries: { date: string }[]): number => {
+  if (foodEntries.length === 0) {
+    return 0;
+  }
+
+  const entryDates = new Set(foodEntries.map(entry => entry.date));
+  let streak = 0;
+  let currentDate = new Date();
+
+  // Check if today has an entry
+  if (entryDates.has(format(currentDate, 'yyyy-MM-dd'))) {
+    streak++;
+    currentDate.setDate(currentDate.getDate() - 1);
+  } else {
+    // If today doesn't have an entry, check yesterday
+    currentDate.setDate(currentDate.getDate() - 1);
+    if (entryDates.has(format(currentDate, 'yyyy-MM-dd'))) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      return 0; // No streak if yesterday and today have no entries
+    }
+  }
+
+  while (entryDates.has(format(currentDate, 'yyyy-MM-dd'))) {
+    streak++;
+    currentDate.setDate(currentDate.getDate() - 1);
+  }
+
+  return streak;
+};
+
 export default function Dashboard() {
   const { userProfile } = useAuth();
   const { foodEntries, fetchFoodEntries } = useFood();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [nutritionSummary, setNutritionSummary] = useState<NutritionSummary | null>(null);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     if (userProfile) {
@@ -19,6 +52,12 @@ export default function Dashboard() {
       fetchFoodEntries(dateStr);
     }
   }, [userProfile, selectedDate, fetchFoodEntries]);
+
+  useEffect(() => {
+    if (foodEntries.length > 0) {
+      setStreak(calculateStreak(foodEntries));
+    }
+  }, [foodEntries]);
 
   const calculateNutritionSummary = React.useCallback(() => {
     const totalCalories = foodEntries.reduce((sum, entry) => sum + Number(entry.calories), 0);
@@ -52,24 +91,6 @@ export default function Dashboard() {
     if (!nutritionSummary) return 0;
     return Math.min((nutritionSummary.total_calories / nutritionSummary.goal_calories) * 100, 100);
   };
-
-  // Streak calculation (simple example: count consecutive days with entries)
-  const [streak, setStreak] = useState(0);
-  useEffect(() => {
-    if (!userProfile || !foodEntries.length) return;
-    let streakCount = 0;
-    let currentDate = new Date(selectedDate);
-    for (let i = 0; i < 30; i++) {
-      const dateStr = format(currentDate, 'yyyy-MM-dd');
-      if (foodEntries.some(entry => entry.date === dateStr)) {
-        streakCount++;
-        currentDate.setDate(currentDate.getDate() - 1);
-      } else {
-        break;
-      }
-    }
-    setStreak(streakCount);
-  }, [foodEntries, selectedDate, userProfile]);
 
   // Rotating motivational messages
   const motivationalMessages = [

@@ -69,8 +69,6 @@ export default function Settings() {
       });
       toast.success('Profile updated successfully!');
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const error = err as Error; // Or a more specific error type if available
       toast.error('Failed to update profile. Please try again.');
     }
 
@@ -136,8 +134,6 @@ export default function Settings() {
 
       toast.success(`Data exported successfully as ${exportFormat.toUpperCase()}!`);
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const error = err as Error; // Or a more specific error type if available
       toast.error('Failed to export data. Please try again.');
     }
   };

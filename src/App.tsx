@@ -14,6 +14,7 @@ import AddFood from './pages/AddFood';
 import Progress from './pages/Progress';
 import Settings from './pages/Settings';
 import ConnectionRequired from './components/ConnectionRequired';
+import ForgotPassword from './pages/ForgotPassword';
 
 function AppRoutes() {
   const { user, userProfile, loading } = useAuth();
@@ -28,6 +29,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );

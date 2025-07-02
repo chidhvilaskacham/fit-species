@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -13,8 +13,7 @@ export const isSupabaseConnected = Boolean(
   supabaseUrl.includes('.supabase.co')
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let supabase: any;
+let supabase: SupabaseClient;
 
 // Enhanced connection test with better error handling
 export const testSupabaseConnection = async (): Promise<boolean> => {
@@ -104,7 +103,7 @@ try {
       },
       realtime: {
         params: {
-          eventsPerSecond: 2,
+          eventsPerSecond: 10,
         },
       },
     });
@@ -113,11 +112,11 @@ try {
   } else {
     console.warn('Supabase credentials not found or invalid. Using mock client.');
     console.warn('Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
-    supabase = createMockClient();
+    supabase = createMockClient() as unknown as SupabaseClient;
   }
 } catch (error) {
   console.error('Error initializing Supabase:', error);
-  supabase = createMockClient();
+  supabase = createMockClient() as unknown as SupabaseClient;
 }
 
 function createMockClient() {
@@ -126,8 +125,7 @@ function createMockClient() {
   return {
     auth: {
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onAuthStateChange: (callback: any) => {
+      onAuthStateChange: (callback: (event: string, session: null) => void) => {
         setTimeout(() => callback('SIGNED_OUT', null), 0);
         return { data: { subscription: { unsubscribe: () => {} } } };
       },

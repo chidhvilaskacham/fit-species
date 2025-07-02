@@ -3,12 +3,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Calendar, TrendingUp, TrendingDown, Minus, Plus, Target, Activity, Flame } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, isSupabaseConnected } from '../lib/supabase';
-import { WeightEntry } from '../types';
+import { WeightEntry, NutritionData } from '../types';
 import { format, subDays, parseISO } from 'date-fns';
 import toast from 'react-hot-toast';
-
-export default function Progress() {
-import { NutritionData } from '../types';
 
 export default function Progress() {
   const { userProfile } = useAuth();
@@ -21,7 +18,6 @@ export default function Progress() {
 
   useEffect(() => {
     if (userProfile && isSupabaseConnected) {
-      fetchWeightEntries();
       fetchWeightEntries();
       fetchNutritionHistory();
     }
