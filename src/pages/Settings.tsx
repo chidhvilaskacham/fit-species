@@ -68,7 +68,9 @@ export default function Settings() {
         allergies: formData.allergies.split(',').map(a => a.trim()).filter(a => a),
       });
       toast.success('Profile updated successfully!');
-    } catch (error) {
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const error = err as Error; // Or a more specific error type if available
       toast.error('Failed to update profile. Please try again.');
     }
 
@@ -109,6 +111,7 @@ export default function Settings() {
         // Simple CSV export for food entries
         const csvData = [
           ['Date', 'Meal', 'Food', 'Quantity', 'Calories', 'Protein', 'Carbs', 'Fat', 'Notes'],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ...exportData.food_entries.map((entry: any) => [
             entry.date,
             entry.meal_type,
@@ -132,7 +135,9 @@ export default function Settings() {
       }
 
       toast.success(`Data exported successfully as ${exportFormat.toUpperCase()}!`);
-    } catch (error) {
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const error = err as Error; // Or a more specific error type if available
       toast.error('Failed to export data. Please try again.');
     }
   };
@@ -173,7 +178,7 @@ export default function Settings() {
               return (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
+                    onClick={() => setActiveTab(tab.key as 'profile' | 'notifications' | 'data')}
                   className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.key
                       ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
@@ -244,7 +249,7 @@ export default function Settings() {
                         name="weightGoal"
                         value={option.value}
                         checked={formData.weightGoal === option.value}
-                        onChange={(e) => setFormData(prev => ({ ...prev, weightGoal: e.target.value as any }))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, weightGoal: e.target.value as 'maintain' | 'lose' | 'gain' }))}
                         className="sr-only"
                       />
                       <div className="text-2xl mb-2">{option.icon}</div>

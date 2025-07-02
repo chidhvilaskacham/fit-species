@@ -51,29 +51,3 @@ export interface NutritionSummary {
   goal_calories: number;
   remaining_calories: number;
 }
-
-export interface WaterEntry {
-  id: string;
-  user_id: string;
-  amount: number;
-  date: string;
-  created_at: string;
-}
-
-export interface MealPlan {
-  id: string;
-  user_id: string;
-  date: string;
-  meal_type: 'breakfast' | 'lunch' | 'dinner' | 'snacks';
-  planned_food: string;
-  notes?: string;
-  created_at: string;
-}
-
-export interface UserAchievement {
-  id: string;
-  user_id: string;
-  achievement_id: string;
-  unlocked_at: string;
-  created_at: string;
-}

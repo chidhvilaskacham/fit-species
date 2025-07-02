@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit2, Trash2, Clock, Sparkles, ChefHat } from 'lucide-react';
+import { Plus, Trash2, Clock, Sparkles, ChefHat } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FoodEntry } from '../types';
 import { useFood } from '../contexts/FoodContext';

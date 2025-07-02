@@ -34,7 +34,12 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
 
   const totalCalories = Math.round(Number(nutritionSummary.total_calories));
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  interface CustomTooltipProps {
+    active?: boolean;
+    payload?: Array<{ payload: typeof data[0] }>;
+  }
+
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -58,12 +63,16 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
     return null;
   };
 
-  const CustomLegend = ({ payload }: any) => {
+  interface CustomLegendProps {
+    payload?: Array<{ color: string; value: string; payload: { grams: number } }>;
+  }
+
+  const CustomLegend = ({ payload }: CustomLegendProps) => {
     return (
       <div className="flex justify-center space-x-6 mt-6">
-        {payload.map((entry: any, index: number) => (
+        {payload?.map((entry: { color: string; value: string; payload: { grams: number } }, index: number) => (
           <div key={index} className="flex items-center space-x-2">
-            <div 
+            <div
               className="w-3 h-3 rounded-full shadow-sm"
               style={{ backgroundColor: entry.color }}
             ></div>

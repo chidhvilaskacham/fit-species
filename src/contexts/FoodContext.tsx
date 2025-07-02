@@ -24,15 +24,15 @@ interface FoodContextType {
 
 const FoodContext = createContext<FoodContextType | undefined>(undefined);
 
-export function useFood() {
+export const useFood = () => {
   const context = useContext(FoodContext);
   if (context === undefined) {
     throw new Error('useFood must be used within a FoodProvider');
   }
   return context;
-}
+};
 
-export function FoodProvider({ children }: { children: React.ReactNode }) {
+export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
   const { userProfile } = useAuth();
   const [foodEntries, setFoodEntries] = useState<FoodEntry[]>([]);
   const [customFoods, setCustomFoods] = useState<CustomFood[]>([]);
@@ -109,17 +109,18 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       console.log('Successfully fetched food entries:', data?.length || 0);
       setFoodEntries(data || []);
       setConnectionStatus('connected');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching food entries:', error);
+      const errorMessage = (error as Error).message;
       
-      if (error.name === 'AbortError') {
+      if ((error as Error).name === 'AbortError') {
         toast.error('Request timed out. Please check your connection.');
-      } else if (error.message?.includes('Failed to fetch') || 
-                 error.message?.includes('Network error') ||
-                 error.message?.includes('fetch')) {
+      } else if (errorMessage?.includes('Failed to fetch') ||
+                 errorMessage?.includes('Network error') ||
+                 errorMessage?.includes('fetch')) {
         toast.error('Connection failed. Please verify your Supabase configuration.');
       } else {
-        toast.error(`Unexpected error: ${error.message}`);
+        toast.error(`Unexpected error: ${errorMessage}`);
       }
       
       setConnectionStatus('disconnected');
@@ -149,7 +150,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       
       setCustomFoods(data || []);
       setConnectionStatus('connected');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching custom foods:', error);
       setCustomFoods([]);
     }
@@ -183,7 +184,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       
       setRecentFoods(uniqueRecentFoods);
       setConnectionStatus('connected');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching recent foods:', error);
       setRecentFoods([]);
     }
@@ -211,7 +212,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
       // No need to refetch, real-time subscription will handle it.
       // We still fetch recent foods as that's a separate list.
       await fetchRecentFoods();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding food entry:', error);
       throw error;
     }
@@ -233,7 +234,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
       // No need to refetch, real-time subscription will handle it.
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating food entry:', error);
       throw error;
     }
@@ -255,7 +256,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
       // No need to refetch, real-time subscription will handle it.
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting food entry:', error);
       throw error;
     }
@@ -278,7 +279,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
       // No need to refetch, real-time subscription will handle it.
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding custom food:', error);
       throw error;
     }

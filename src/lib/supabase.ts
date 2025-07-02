@@ -13,6 +13,7 @@ export const isSupabaseConnected = Boolean(
   supabaseUrl.includes('.supabase.co')
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let supabase: any;
 
 // Enhanced connection test with better error handling
@@ -68,12 +69,13 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
     console.log('Database connection test passed');
     return true;
     
-  } catch (error: any) {
+  } catch (error) {
     console.error('Supabase connection test failed:', error);
+    const errorMessage = (error as Error).message;
     
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       console.error('Connection timeout - Supabase project may be unreachable');
-    } else if (error.message?.includes('Failed to fetch')) {
+    } else if (errorMessage?.includes('Failed to fetch')) {
       console.error('Network error - Check your internet connection and Supabase project status');
     }
     
@@ -124,6 +126,7 @@ function createMockClient() {
   return {
     auth: {
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onAuthStateChange: (callback: any) => {
         setTimeout(() => callback('SIGNED_OUT', null), 0);
         return { data: { subscription: { unsubscribe: () => {} } } };

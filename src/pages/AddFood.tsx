@@ -118,6 +118,7 @@ export default function AddFood() {
     fetchRecentFoods();
   }, [fetchCustomFoods, fetchRecentFoods]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleQuickAdd = (food: any) => {
     setFormData({
       foodName: food.name || food.food_name,
@@ -149,7 +150,7 @@ export default function AddFood() {
         protein: parseFloat(formData.protein),
         carbs: parseFloat(formData.carbs),
         fat: parseFloat(formData.fat),
-        meal_type: mealType as any,
+        meal_type: mealType as 'breakfast' | 'lunch' | 'dinner' | 'snacks',
         notes: formData.notes || undefined,
         date,
       });
@@ -272,7 +273,7 @@ export default function AddFood() {
                 return (
                   <button
                     key={tab.key}
-                    onClick={() => setActiveTab(tab.key as any)}
+                    onClick={() => setActiveTab(tab.key as 'search' | 'custom' | 'recent')}
                     className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 ${
                       activeTab === tab.key
                         ? 'bg-gradient-to-r from-emerald-100/80 to-teal-100/80 text-emerald-700 dark:from-emerald-900/20 dark:to-teal-900/20 dark:text-emerald-300 shadow-md backdrop-blur-sm'

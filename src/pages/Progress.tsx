@@ -8,9 +8,12 @@ import { format, subDays, parseISO } from 'date-fns';
 import toast from 'react-hot-toast';
 
 export default function Progress() {
+import { NutritionData } from '../types';
+
+export default function Progress() {
   const { userProfile } = useAuth();
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
-  const [nutritionHistory, setNutritionHistory] = useState<any[]>([]);
+  const [nutritionHistory, setNutritionHistory] = useState<NutritionData[]>([]);
   const [newWeight, setNewWeight] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
@@ -19,11 +22,13 @@ export default function Progress() {
   useEffect(() => {
     if (userProfile && isSupabaseConnected) {
       fetchWeightEntries();
+      fetchWeightEntries();
       fetchNutritionHistory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile]);
 
-  const fetchWeightEntries = async () => {
+  const fetchWeightEntries = React.useCallback(async () => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
@@ -39,14 +44,14 @@ export default function Progress() {
       console.error('Error fetching weight entries:', error);
       toast.error('Failed to load weight data');
     }
-  };
+  }, [userProfile]);
 
-  const fetchNutritionHistory = async () => {
+  const fetchNutritionHistory = React.useCallback(async () => {
     if (!userProfile || !isSupabaseConnected) return;
 
     try {
       const thirtyDaysAgo = format(subDays(new Date(), 30), 'yyyy-MM-dd');
-      
+
       const { data, error } = await supabase
         .from('food_entries')
         .select('date, calories, protein, carbs, fat')
@@ -57,7 +62,7 @@ export default function Progress() {
       if (error) throw error;
 
       // Group by date and sum nutrition values
-      const groupedData = (data || []).reduce((acc: any, entry: { date: string; calories: number; protein: number; carbs: number; fat: number }) => {
+      const groupedData = (data || []).reduce((acc: Record<string, NutritionData>, entry: { date: string; calories: number; protein: number; carbs: number; fat: number }) => {
         const date = entry.date;
         if (!acc[date]) {
           acc[date] = {
@@ -82,7 +87,7 @@ export default function Progress() {
       toast.error('Failed to load nutrition history');
     }
     setLoading(false);
-  };
+  }, [userProfile]);
 
   const handleAddWeight = async (e: React.FormEvent) => {
     e.preventDefault();

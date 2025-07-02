@@ -3,19 +3,21 @@ import { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase, isSupabaseConnected } from '../lib/supabase';
 import { User } from '../types';
 
+import { AuthError } from '@supabase/supabase-js';
+
 interface AuthContextType {
   user: SupabaseUser | null;
   userProfile: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   updateProfile: (profile: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -109,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       console.log('Profile data:', data);
       setUserProfile(data);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Profile fetch error:', error);
       setUserProfile(null);
     } finally {
@@ -184,7 +186,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateProfile = async (profile: Partial<User>) => {
+  const updateProfile = async (profileData: Partial<User>) => {
     if (!user) {
       throw new Error('No authenticated user');
     }
@@ -193,11 +195,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error('Supabase not connected. Please check your .env configuration.');
     }
 
-    console.log('Updating profile for user:', user.id, 'with data:', profile);
+    console.log('Updating profile for user:', user.id, 'with data:', profileData);
 
     try {
       // Destructure to prevent updating the id or email directly.
-      const { id, email, ...updateData } = profile;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, email, ...updateData } = profileData;
 
       const { error } = await supabase
         .from('users')

@@ -72,9 +72,9 @@ export default function ProfileSetup() {
         navigate('/dashboard', { replace: true });
       }, 100);
       
-    } catch (err: any) {
+    } catch (err) {
       console.error('Profile update error:', err);
-      toast.error(err.message || 'Failed to save profile. Please try again.');
+      toast.error((err as Error).message || 'Failed to save profile. Please try again.');
       setLoading(false);
     }
   };
@@ -152,7 +152,7 @@ export default function ProfileSetup() {
                     name="weightGoal"
                     value={option.value}
                     checked={formData.weightGoal === option.value}
-                    onChange={(e) => setFormData(prev => ({ ...prev, weightGoal: e.target.value as any }))}
+                    onChange={(e) => setFormData(prev => ({ ...prev, weightGoal: e.target.value as 'maintain' | 'lose' | 'gain' }))}
                     className="sr-only"
                     disabled={loading}
                   />
