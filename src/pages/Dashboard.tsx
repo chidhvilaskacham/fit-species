@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Calendar, Plus, Target, TrendingUp, Flame, Activity, Sparkles, Award, Zap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,7 +6,6 @@ import { useFood } from '../contexts/FoodContext';
 import { NutritionSummary } from '../types';
 import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
-import { Tooltip } from 'react-tooltip'; // If not present, install a tooltip lib like react-tooltip
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
@@ -89,7 +88,7 @@ export default function Dashboard() {
       setBannerIndex(i => (i + 1) % motivationalMessages.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [motivationalMessages.length]);
 
   if (!userProfile) {
     return (
@@ -162,8 +161,8 @@ export default function Dashboard() {
         {/* Nutrition Summary Cards */}
         {nutritionSummary && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Calories Card with tooltip */}
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary" data-tooltip-id="calories-tooltip">
+            {/* Calories Card */}
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Calories</p>
@@ -199,7 +198,6 @@ export default function Dashboard() {
                   }
                 </p>
               </div>
-              <Tooltip id="calories-tooltip" place="top" content="Click for weekly calorie insights!" />
             </div>
 
             <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.1s' }}>

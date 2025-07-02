@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { Calendar, TrendingUp, TrendingDown, Minus, Plus, Target, Activity, Flame } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConnected } from '../lib/supabase';
 import { WeightEntry } from '../types';
 import { format, subDays, parseISO } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -17,14 +17,14 @@ export default function Progress() {
   const [addingWeight, setAddingWeight] = useState(false);
 
   useEffect(() => {
-    if (userProfile) {
+    if (userProfile && isSupabaseConnected) {
       fetchWeightEntries();
       fetchNutritionHistory();
     }
   }, [userProfile]);
 
   const fetchWeightEntries = async () => {
-    if (!userProfile) return;
+    if (!userProfile || !isSupabaseConnected) return;
 
     try {
       const { data, error } = await supabase
@@ -42,7 +42,7 @@ export default function Progress() {
   };
 
   const fetchNutritionHistory = async () => {
-    if (!userProfile) return;
+    if (!userProfile || !isSupabaseConnected) return;
 
     try {
       const thirtyDaysAgo = format(subDays(new Date(), 30), 'yyyy-MM-dd');
@@ -86,7 +86,7 @@ export default function Progress() {
 
   const handleAddWeight = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userProfile || !newWeight) return;
+    if (!userProfile || !newWeight || !isSupabaseConnected) return;
 
     setAddingWeight(true);
     try {
@@ -120,13 +120,10 @@ export default function Progress() {
 
   const currentWeight = weightEntries.length > 0 ? weightEntries[weightEntries.length - 1].weight : null;
 
-  // Helper for weight goal line
-  const weightGoal = userProfile?.weight_goal || null;
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" aria-busy="true" aria-live="polite">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
       </div>
     );
   }
@@ -145,7 +142,7 @@ export default function Progress() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-mint-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
             Progress Tracking 📈
           </h1>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
@@ -188,7 +185,7 @@ export default function Progress() {
                   {userProfile?.weight_goal || 'Not set'}
                 </p>
               </div>
-              <div className="p-3 bg-gradient-to-br from-primary-500 to-mint-500 rounded-xl shadow-lg">
+              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl shadow-lg">
                 <Target className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -273,18 +270,6 @@ export default function Progress() {
                         activeDot={{ r: 8, fill: '#16a34a' }}
                         aria-label="Weight trend line"
                       />
-                      {/* Goal line */}
-                      {weightGoal && (
-                        <Line
-                          type="stepAfter"
-                          dataKey={() => weightGoal}
-                          stroke="#f59e42"
-                          strokeDasharray="6 6"
-                          dot={false}
-                          isAnimationActive={false}
-                          aria-label="Weight goal line"
-                        />
-                      )}
                       <defs>
                         <linearGradient id="weightGradient" x1="0" y1="0" x2="1" y2="0">
                           <stop offset="0%" stopColor="#22c55e" />
@@ -379,7 +364,7 @@ export default function Progress() {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors focus:outline-primary-500"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                     aria-label="Weight entry date"
                   />
                 </div>
@@ -397,7 +382,7 @@ export default function Progress() {
                   required
                   value={newWeight}
                   onChange={(e) => setNewWeight(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors focus:outline-primary-500"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   placeholder="Enter your weight"
                   aria-label="Weight value"
                 />
@@ -406,7 +391,7 @@ export default function Progress() {
               <button
                 type="submit"
                 disabled={addingWeight}
-                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-primary-500"
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-emerald-700 hover:to-teal-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 aria-label="Add Weight Entry"
                 aria-busy={addingWeight}
               >

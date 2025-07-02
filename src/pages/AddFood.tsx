@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Plus, Clock, Star, ArrowLeft, Save } from 'lucide-react';
 import { useFood } from '../contexts/FoodContext';
 import toast from 'react-hot-toast';
-import Fuse from 'fuse.js'; // For fuzzy search (install with: npm install fuse.js)
+import Fuse from 'fuse.js';
 
 export default function AddFood() {
   const [searchParams] = useSearchParams();
@@ -153,7 +153,7 @@ export default function AddFood() {
         notes: formData.notes || undefined,
         date,
       });
-      toast.success('Food added!'); // Improved toast notification
+      toast.success('Food added successfully!');
       navigate('/dashboard');
     } catch (error) {
       toast.error('Error adding food entry');
@@ -214,10 +214,6 @@ export default function AddFood() {
           notes: '',
         });
       }
-      if (e.key === 'Tab' && document.activeElement?.tagName !== 'INPUT') {
-        // Focus next tab or input (accessibility improvement)
-        // ...optional: implement custom tab focus logic if needed...
-      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -252,7 +248,7 @@ export default function AddFood() {
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-mint-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Add Food to {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
@@ -279,7 +275,7 @@ export default function AddFood() {
                     onClick={() => setActiveTab(tab.key as any)}
                     className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 ${
                       activeTab === tab.key
-                        ? 'bg-gradient-to-r from-primary-100/80 to-mint-100/80 text-primary-700 dark:from-primary-900/20 dark:to-mint-900/20 dark:text-primary-300 shadow-md backdrop-blur-sm'
+                        ? 'bg-gradient-to-r from-emerald-100/80 to-teal-100/80 text-emerald-700 dark:from-emerald-900/20 dark:to-teal-900/20 dark:text-emerald-300 shadow-md backdrop-blur-sm'
                         : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-gray-700/50 backdrop-blur-sm'
                     }`}
                     role="tab"
@@ -303,7 +299,7 @@ export default function AddFood() {
                     placeholder="Search for foods or categories..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   />
                 </div>
                 
@@ -312,11 +308,11 @@ export default function AddFood() {
                     <div
                       key={index}
                       onClick={() => handleQuickAdd(food)}
-                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-primary-50/80 hover:to-mint-50/80 dark:hover:from-primary-900/10 dark:hover:to-mint-900/10 cursor-pointer transition-all duration-200 hover:shadow-md group backdrop-blur-sm"
+                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-emerald-50/80 hover:to-teal-50/80 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10 cursor-pointer transition-all duration-200 hover:shadow-md group backdrop-blur-sm"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-primary-700 dark:group-hover:text-primary-300">
+                          <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300">
                             {food.name}
                           </h4>
                           <div className="flex items-center justify-between mt-1">
@@ -325,7 +321,7 @@ export default function AddFood() {
                               {food.calories} cal
                             </span>
                           </div>
-                          <span className="text-xs text-primary-600 dark:text-primary-400 font-medium">
+                          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                             {food.category}
                           </span>
                         </div>
@@ -348,7 +344,7 @@ export default function AddFood() {
                     <div
                       key={index}
                       onClick={() => handleQuickAdd(food)}
-                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-primary-50/80 hover:to-mint-50/80 dark:hover:from-primary-900/10 dark:hover:to-mint-900/10 cursor-pointer transition-all duration-200 hover:shadow-md backdrop-blur-sm"
+                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-emerald-50/80 hover:to-teal-50/80 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10 cursor-pointer transition-all duration-200 hover:shadow-md backdrop-blur-sm"
                     >
                       <h4 className="font-semibold text-gray-900 dark:text-white">{food.food_name}</h4>
                       <div className="flex items-center justify-between mt-1">
@@ -382,7 +378,7 @@ export default function AddFood() {
                         fat: food.fat_per_100g,
                         serving: '100g',
                       })}
-                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-primary-50/80 hover:to-mint-50/80 dark:hover:from-primary-900/10 dark:hover:to-mint-900/10 cursor-pointer transition-all duration-200 hover:shadow-md backdrop-blur-sm"
+                      className="p-4 border border-gray-200/50 dark:border-gray-600/50 rounded-xl hover:bg-gradient-to-r hover:from-emerald-50/80 hover:to-teal-50/80 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10 cursor-pointer transition-all duration-200 hover:shadow-md backdrop-blur-sm"
                     >
                       <h4 className="font-semibold text-gray-900 dark:text-white">{food.name}</h4>
                       <div className="flex items-center justify-between mt-1">
@@ -416,7 +412,7 @@ export default function AddFood() {
                   required
                   value={formData.foodName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   placeholder="Enter food name"
                 />
               </div>
@@ -431,7 +427,7 @@ export default function AddFood() {
                   required
                   value={formData.quantity}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   placeholder="e.g., 100g, 1 cup, 1 piece"
                 />
               </div>
@@ -449,7 +445,7 @@ export default function AddFood() {
                     step="0.1"
                     value={formData.calories}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   />
                 </div>
                 <div>
@@ -464,7 +460,7 @@ export default function AddFood() {
                     step="0.1"
                     value={formData.protein}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   />
                 </div>
               </div>
@@ -482,7 +478,7 @@ export default function AddFood() {
                     step="0.1"
                     value={formData.carbs}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   />
                 </div>
                 <div>
@@ -497,7 +493,7 @@ export default function AddFood() {
                     step="0.1"
                     value={formData.fat}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   />
                 </div>
               </div>
@@ -511,7 +507,7 @@ export default function AddFood() {
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   placeholder="Mood, energy level, digestion, etc."
                 />
               </div>
@@ -519,10 +515,10 @@ export default function AddFood() {
               {/* Live nutrient feedback */}
               <div className="mb-4" aria-live="polite">
                 <div className="flex space-x-4 text-sm">
-                  <span className="font-semibold text-primary-700 dark:text-primary-300">Calories: {formData.calories || 0}</span>
-                  <span className="font-semibold text-primary-700 dark:text-primary-300">Protein: {formData.protein || 0}g</span>
-                  <span className="font-semibold text-primary-700 dark:text-primary-300">Carbs: {formData.carbs || 0}g</span>
-                  <span className="font-semibold text-primary-700 dark:text-primary-300">Fat: {formData.fat || 0}g</span>
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-300">Calories: {formData.calories || 0}</span>
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-300">Protein: {formData.protein || 0}g</span>
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-300">Carbs: {formData.carbs || 0}g</span>
+                  <span className="font-semibold text-emerald-700 dark:text-emerald-300">Fat: {formData.fat || 0}g</span>
                 </div>
               </div>
 
@@ -530,7 +526,7 @@ export default function AddFood() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-emerald-700 hover:to-teal-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   aria-label="Add Food"
                 >
                   {loading ? (
@@ -550,7 +546,7 @@ export default function AddFood() {
                   <button
                     type="button"
                     onClick={saveAsCustomFood}
-                    className="px-6 py-3 border-2 border-primary-200 text-primary-600 rounded-xl hover:bg-primary-50/80 backdrop-blur-sm transition-colors font-medium flex items-center space-x-2"
+                    className="px-6 py-3 border-2 border-emerald-200 text-emerald-600 rounded-xl hover:bg-emerald-50/80 backdrop-blur-sm transition-colors font-medium flex items-center space-x-2"
                     aria-label="Save as Custom Food"
                   >
                     <Save className="h-4 w-4" />

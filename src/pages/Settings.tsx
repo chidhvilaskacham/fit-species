@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, Target, Bell, Moon, Sun, Download, Save, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConnected } from '../lib/supabase';
 import { format as dateFormat } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -76,7 +76,10 @@ export default function Settings() {
   };
 
   const handleExportData = async (exportFormat: 'csv' | 'json') => {
-    if (!userProfile) return;
+    if (!userProfile || !isSupabaseConnected) {
+      toast.error('Database not connected. Cannot export data.');
+      return;
+    }
 
     try {
       // Fetch all user data
@@ -154,7 +157,7 @@ export default function Settings() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-mint-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
             Settings ⚙️
           </h1>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
@@ -171,11 +174,9 @@ export default function Settings() {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as any)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200 focus:outline-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${{
-                    true: 'focus:outline focus:outline-2',
-                  }} ${
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.key
-                      ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                      ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
                       : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
                   }`}
                   role="tab"
@@ -204,7 +205,7 @@ export default function Settings() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                 />
               </div>
 
@@ -220,7 +221,7 @@ export default function Settings() {
                   max="5000"
                   value={formData.dailyCalorieGoal}
                   onChange={(e) => setFormData(prev => ({ ...prev, dailyCalorieGoal: parseInt(e.target.value) }))}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                 />
               </div>
 
@@ -234,7 +235,7 @@ export default function Settings() {
                       key={option.value}
                       className={`relative flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 backdrop-blur-sm ${
                         formData.weightGoal === option.value
-                          ? 'border-primary-500 bg-gradient-to-br from-primary-50/80 to-mint-50/80 dark:from-primary-900/20 dark:to-mint-900/20'
+                          ? 'border-emerald-500 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 dark:from-emerald-900/20 dark:to-teal-900/20'
                           : 'border-gray-200/50 dark:border-gray-600/50 hover:border-gray-300 dark:hover:border-gray-500 bg-white/50 dark:bg-gray-700/50'
                       }`}
                     >
@@ -263,7 +264,7 @@ export default function Settings() {
                       key={option}
                       className={`flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 backdrop-blur-sm ${
                         formData.dietaryPreferences.includes(option)
-                          ? 'border-primary-500 bg-primary-50/80 text-primary-700 dark:bg-primary-900/20 dark:text-primary-300'
+                          ? 'border-emerald-500 bg-emerald-50/80 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
                           : 'border-gray-200/50 dark:border-gray-600/50 hover:border-gray-300 dark:hover:border-gray-500 bg-white/50 dark:bg-gray-700/50'
                       }`}
                     >
@@ -288,14 +289,14 @@ export default function Settings() {
                   type="text"
                   value={formData.allergies}
                   onChange={(e) => setFormData(prev => ({ ...prev, allergies: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                   placeholder="e.g., Peanuts, Shellfish, Dairy (comma-separated)"
                 />
               </div>
 
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50/80 to-gray-100/80 dark:from-gray-700/80 dark:to-gray-800/80 rounded-xl border border-gray-200/50 dark:border-gray-600/50 backdrop-blur-sm">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gradient-to-br from-primary-500 to-mint-500 rounded-lg shadow-lg">
+                  <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg shadow-lg">
                     {darkMode ? <Moon className="h-5 w-5 text-white" /> : <Sun className="h-5 w-5 text-white" />}
                   </div>
                   <div>
@@ -311,7 +312,7 @@ export default function Settings() {
                   type="button"
                   onClick={toggleDarkMode}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    darkMode ? 'bg-primary-600' : 'bg-gray-200'
+                    darkMode ? 'bg-emerald-600' : 'bg-gray-200'
                   }`}
                 >
                   <span
@@ -325,7 +326,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-primary-600 to-mint-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-mint-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-primary-500"
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-6 rounded-xl hover:from-emerald-700 hover:to-teal-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 aria-label="Save Profile Changes"
                 aria-busy={loading}
               >
@@ -364,7 +365,7 @@ export default function Settings() {
                 <button
                   onClick={() => setNotifications(prev => ({ ...prev, mealReminders: !prev.mealReminders }))}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notifications.mealReminders ? 'bg-primary-600' : 'bg-gray-200 dark:bg-gray-600'
+                    notifications.mealReminders ? 'bg-emerald-600' : 'bg-gray-200 dark:bg-gray-600'
                   }`}
                 >
                   <span
@@ -390,7 +391,7 @@ export default function Settings() {
                 <button
                   onClick={() => setNotifications(prev => ({ ...prev, waterReminders: !prev.waterReminders }))}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notifications.waterReminders ? 'bg-primary-600' : 'bg-gray-200 dark:bg-gray-600'
+                    notifications.waterReminders ? 'bg-emerald-600' : 'bg-gray-200 dark:bg-gray-600'
                   }`}
                 >
                   <span
@@ -409,7 +410,7 @@ export default function Settings() {
                   type="time"
                   value={notifications.reminderTime}
                   onChange={(e) => setNotifications(prev => ({ ...prev, reminderTime: e.target.value }))}
-                  className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
+                  className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50/80 backdrop-blur-sm dark:bg-gray-700/80 dark:text-white transition-colors"
                 />
               </div>
 
@@ -464,7 +465,7 @@ export default function Settings() {
               <button
                 className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl hover:from-red-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 aria-label="Request Account Deletion"
-                // onClick={handleAccountDeletion} // Implement as needed
+                onClick={() => toast.info('Account deletion feature coming soon!')}
               >
                 <Shield className="h-4 w-4" />
                 <span>Request Account Deletion</span>
