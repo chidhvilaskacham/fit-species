@@ -64,16 +64,23 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-neutral-800 rounded-2xl shadow-md p-6 sm:p-8 animate-fade-in border border-neutral-200 dark:border-neutral-700">
+    <div className="min-h-screen bg-gradient-to-br from-mint-50 via-sky-50 to-cyan-50 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-mint-200/20 to-sky-200/20 rounded-full blur-xl floating-element"></div>
+        <div className="absolute top-40 right-32 w-24 h-24 bg-gradient-to-br from-cyan-200/20 to-blue-200/20 rounded-full blur-xl floating-element" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-32 left-32 w-40 h-40 bg-gradient-to-br from-sky-200/20 to-mint-200/20 rounded-full blur-xl floating-element" style={{ animationDelay: '4s' }}></div>
+      </div>
+
+      <div className="max-w-md w-full bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl rounded-3xl shadow-xl p-6 sm:p-8 animate-fade-in border border-white/20 dark:border-neutral-700/30 relative z-10">
         <div className="text-center mb-6 sm:mb-8">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-gradient-to-br from-mint-300 to-sky-300 rounded-2xl shadow-md">
-              <Activity className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+            <div className="p-4 bg-gradient-to-br from-mint-400 to-sky-500 rounded-3xl shadow-lg">
+              <Activity className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white mb-2">Join Fit Species</h1>
-          <p className="text-neutral-600 dark:text-neutral-300">Start your wellness journey today</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Join NutriTrack</h1>
+          <p className="text-neutral-600 dark:text-neutral-300">Start your smart nutrition journey today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -91,7 +98,7 @@ export default function Signup() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 sm:py-4 border border-neutral-300 dark:border-neutral-600 rounded-2xl focus:ring-2 focus:ring-mint-300 focus:border-mint-300 transition-all bg-neutral-50 dark:bg-neutral-700 dark:text-white hover:scale-105 text-sm sm:text-base"
+                  className="w-full pl-10 pr-4 py-3 sm:py-4 border border-neutral-300/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-mint-400 focus:border-mint-400 transition-all bg-white/80 dark:bg-neutral-700/80 backdrop-blur-sm dark:text-white hover:scale-105 text-sm sm:text-base shadow-lg"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -110,7 +117,7 @@ export default function Signup() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 sm:py-4 border border-neutral-300 dark:border-neutral-600 rounded-2xl focus:ring-2 focus:ring-mint-300 focus:border-mint-300 transition-all bg-neutral-50 dark:bg-neutral-700 dark:text-white hover:scale-105 text-sm sm:text-base"
+                  className="w-full pl-10 pr-4 py-3 sm:py-4 border border-neutral-300/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-mint-400 focus:border-mint-400 transition-all bg-white/80 dark:bg-neutral-700/80 backdrop-blur-sm dark:text-white hover:scale-105 text-sm sm:text-base shadow-lg"
                   placeholder="your@email.com"
                 />
               </div>
@@ -129,7 +136,7 @@ export default function Signup() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 sm:py-4 border border-neutral-300 dark:border-neutral-600 rounded-2xl focus:ring-2 focus:ring-mint-300 focus:border-mint-300 transition-all bg-neutral-50 dark:bg-neutral-700 dark:text-white hover:scale-105 text-sm sm:text-base"
+                  className="w-full pl-10 pr-12 py-3 sm:py-4 border border-neutral-300/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-mint-400 focus:border-mint-400 transition-all bg-white/80 dark:bg-neutral-700/80 backdrop-blur-sm dark:text-white hover:scale-105 text-sm sm:text-base shadow-lg"
                   placeholder="Create a secure password"
                 />
                 <button
@@ -156,7 +163,7 @@ export default function Signup() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-12 py-3 sm:py-4 border border-neutral-300 dark:border-neutral-600 rounded-2xl focus:ring-2 focus:ring-mint-300 focus:border-mint-300 transition-all bg-neutral-50 dark:bg-neutral-700 dark:text-white hover:scale-105 text-sm sm:text-base"
+                  className="w-full pl-10 pr-12 py-3 sm:py-4 border border-neutral-300/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-mint-400 focus:border-mint-400 transition-all bg-white/80 dark:bg-neutral-700/80 backdrop-blur-sm dark:text-white hover:scale-105 text-sm sm:text-base shadow-lg"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -174,7 +181,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-mint-300 to-sky-300 text-white py-3 sm:py-4 px-4 rounded-2xl hover:scale-105 focus:ring-2 focus:ring-mint-300 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md text-sm sm:text-base"
+            className="w-full bg-gradient-to-r from-mint-400 to-sky-500 text-white py-3 sm:py-4 px-4 rounded-2xl hover:scale-105 focus:ring-2 focus:ring-mint-400 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl text-sm sm:text-base"
           >
             {loading ? (
               <div className="flex items-center justify-center space-x-2">

@@ -17,11 +17,11 @@ export default function ConnectionRequired() {
         </div>
         
         <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-4">
-          Welcome to Fit Species
+          Welcome to NutriTrack
         </h1>
         
         <p className="text-lg sm:text-xl text-neutral-600 dark:text-neutral-300 mb-8">
-          Your ultimate daily food companion for tracking nutrition and achieving your fitness goals.
+          Your smart nutrition companion for tracking meals, monitoring health metrics, and achieving your wellness goals.
         </p>
 
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-6 mb-8">
@@ -30,13 +30,14 @@ export default function ConnectionRequired() {
             <div className="text-left">
               <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-200 mb-2">Database Connection Required</h3>
               <p className="text-amber-700 dark:text-amber-300 mb-4">
-                Fit Species uses Supabase to securely store your nutrition data, meal logs, and progress tracking. 
+                NutriTrack uses Supabase to securely store your nutrition data, meal logs, health metrics, and progress tracking. 
                 Click the "Connect to Supabase" button in the top right corner to set up your database.
               </p>
               <div className="space-y-2 text-sm text-amber-600 dark:text-amber-400">
                 <p>✓ Secure data storage & encryption</p>
-                <p>✓ Real-time synchronization</p>
+                <p>✓ Real-time synchronization across devices</p>
                 <p>✓ Automatic backup & recovery</p>
+                <p>✓ AI-powered nutrition insights</p>
                 <p>✓ Multi-device access</p>
               </div>
             </div>
@@ -80,7 +81,7 @@ export default function ConnectionRequired() {
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6">
           <p className="text-sm text-blue-700 dark:text-blue-300">
             <strong>Privacy First:</strong> Your data is stored securely in your own Supabase project. 
-            Fit Species doesn't have access to your personal information or health data.
+            NutriTrack doesn't have access to your personal information or health data.
           </p>
         </div>
       </div>
