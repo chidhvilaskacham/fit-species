@@ -13,8 +13,11 @@ import Dashboard from './pages/Dashboard';
 import AddFood from './pages/AddFood';
 import Progress from './pages/Progress';
 import Settings from './pages/Settings';
+import Hydration from './pages/Hydration';
+import Goals from './pages/Goals';
 import ConnectionRequired from './components/ConnectionRequired';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function AppRoutes() {
   const { user, userProfile, loading } = useAuth();
@@ -30,6 +33,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -50,6 +54,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<Navigate to="/dashboard" replace />} />
       <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/forgot-password" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/reset-password" element={<Navigate to="/dashboard" replace />} />
       <Route path="/profile-setup" element={<Navigate to="/dashboard" replace />} />
       
       <Route path="/" element={<Layout />}>
@@ -57,6 +63,8 @@ function AppRoutes() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="add-food" element={<AddFood />} />
         <Route path="progress" element={<Progress />} />
+        <Route path="hydration" element={<Hydration />} />
+        <Route path="goals" element={<Goals />} />
         <Route path="settings" element={<Settings />} />
       </Route>
       
@@ -79,7 +87,7 @@ function App() {
   if (isCheckingConnection) {
     return (
       <ThemeProvider>
-        <LoadingSpinner message="Starting Fit Species" />
+        <LoadingSpinner message="Starting NutriTrack" />
       </ThemeProvider>
     );
   }
