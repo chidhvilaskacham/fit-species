@@ -14,8 +14,9 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'from-mint-500 to-emerald-500' },
-    { path: '/add-food', icon: PlusCircle, label: 'Add Food', color: 'from-sky-500 to-cyan-500' },
+    { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'from-orange-500 to-red-500' },
+    { path: '/workouts', icon: Activity, label: 'Workouts', color: 'from-purple-500 to-pink-500' },
+    { path: '/add-food', icon: PlusCircle, label: 'Nutrition', color: 'from-green-500 to-emerald-500' },
     { path: '/progress', icon: TrendingUp, label: 'Progress', color: 'from-orange-500 to-red-500' },
     { path: '/hydration', icon: Droplets, label: 'Hydration', color: 'from-blue-500 to-indigo-500' },
     { path: '/goals', icon: Target, label: 'Goals', color: 'from-purple-500 to-pink-500' },
@@ -56,10 +57,10 @@ export default function Layout() {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-mint-600 to-sky-600 bg-clip-text text-transparent">
-                    NutriTrack
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    Fit Species
                   </h1>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Smart Nutrition Companion</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">Complete Fitness Platform</p>
                 </div>
               </div>
               

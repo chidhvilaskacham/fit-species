@@ -11,6 +11,7 @@ import Signup from './pages/Signup';
 import ProfileSetup from './pages/ProfileSetup';
 import Dashboard from './pages/Dashboard';
 import AddFood from './pages/AddFood';
+import Workouts from './pages/Workouts';
 import Progress from './pages/Progress';
 import Settings from './pages/Settings';
 import Hydration from './pages/Hydration';
@@ -61,6 +62,7 @@ function AppRoutes() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="workouts" element={<Workouts />} />
         <Route path="add-food" element={<AddFood />} />
         <Route path="progress" element={<Progress />} />
         <Route path="hydration" element={<Hydration />} />

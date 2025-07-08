@@ -135,8 +135,8 @@ export default function Dashboard() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
-                <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white">
-                  Welcome back, {userProfile.name}!
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                  Welcome to Fit Species, {userProfile.name}!
                 </h1>
                 <div className="flex space-x-1">
                   <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
@@ -159,7 +159,7 @@ export default function Dashboard() {
                 </div>
               )}
               <p className="text-neutral-500 dark:text-neutral-400">
-                Track your nutrition for {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                Your complete fitness & nutrition dashboard for {format(selectedDate, 'EEEE, MMMM d, yyyy')}
               </p>
             </div>
             
@@ -296,12 +296,20 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
               <a
+                href="/workouts"
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                aria-label="Start a workout session"
+              >
+                <Activity className="h-5 w-5" />
+                <span>Start Workout</span>
+              </a>
+              <a
                 href="/add-food"
                 className="button-primary inline-flex items-center justify-center space-x-2 min-w-[160px]"
                 aria-label="Add food to your daily log"
               >
                 <Plus className="h-5 w-5" />
-                <span>Add Food</span>
+                <span>Log Nutrition</span>
               </a>
               <a
                 href="/progress"
