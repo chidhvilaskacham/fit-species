@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -6,19 +6,21 @@ import { FoodProvider } from './contexts/FoodContext';
 import { isSupabaseConnected } from './lib/supabase';
 import LoadingSpinner from './components/LoadingSpinner';
 import Layout from './components/Layout';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import ProfileSetup from './pages/ProfileSetup';
-import Dashboard from './pages/Dashboard';
-import AddFood from './pages/AddFood';
-import Workouts from './pages/Workouts';
-import Progress from './pages/Progress';
-import Settings from './pages/Settings';
-import Hydration from './pages/Hydration';
-import Goals from './pages/Goals';
-import ConnectionRequired from './components/ConnectionRequired';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
+
+// Lazy-loaded pages
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const ProfileSetup = lazy(() => import('./pages/ProfileSetup'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AddFood = lazy(() => import('./pages/AddFood'));
+const Workouts = lazy(() => import('./pages/Workouts'));
+const Progress = lazy(() => import('./pages/Progress'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Hydration = lazy(() => import('./pages/Hydration'));
+const Goals = lazy(() => import('./pages/Goals'));
+const ConnectionRequired = lazy(() => import('./components/ConnectionRequired'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 function AppRoutes() {
   const { user, userProfile, loading } = useAuth();
@@ -98,7 +100,9 @@ function App() {
     return (
       <ThemeProvider>
         <Router>
-          <ConnectionRequired />
+          <Suspense fallback={<LoadingSpinner />}>
+            <ConnectionRequired />
+          </Suspense>
         </Router>
       </ThemeProvider>
     );
@@ -109,7 +113,9 @@ function App() {
       <AuthProvider>
         <FoodProvider>
           <Router>
-            <AppRoutes />
+            <Suspense fallback={<LoadingSpinner message="Loading page..." />}>
+              <AppRoutes />
+            </Suspense>
           </Router>
         </FoodProvider>
       </AuthProvider>
