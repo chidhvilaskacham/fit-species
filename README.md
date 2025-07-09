@@ -1,4 +1,3 @@
-## fit-species
 # The Fit Species 🥗 – Smart Nutrition & Wellness Tracker
 
 **The Fit Species** is a modern, mobile-responsive web app designed to help users monitor their daily nutrition, hydration, and health goals through a streamlined dashboard.
@@ -47,16 +46,6 @@
 - **Routing**: React Router DOM  
 - **Authentication**: Form validation + localStorage mock  
 - **Deployment**: Netlify
-
----
-
-## 🖼️ Screenshots
-
-> _[Add screenshots to the `/screenshots/` folder and link them here]_
-
-- ![Login Page](./screenshots/login.png)
-- ![Dashboard](./screenshots/dashboard.png)
-- ![Progress Page](./screenshots/progress.png)
 
 ---
 
