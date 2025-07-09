@@ -86,10 +86,11 @@ src/
 ```
 
 ✅ To-Do (Roadmap)
+```
  Barcode scanning input
  AI food image recognition
  Food inventory integration
  Google sign-in
  Data export (CSV / JSON / PDF)
  Backend (Supabase/Firebase/Express)
-
+```
