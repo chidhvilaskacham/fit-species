@@ -91,23 +91,23 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
 
   if (totalCalories === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-80 text-neutral-500 dark:text-neutral-400">
+      <div className="flex flex-col items-center justify-center h-96 text-neutral-500 dark:text-neutral-400">
         <div className="relative mb-6">
-          <div className="w-24 h-24 bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-700 dark:to-neutral-600 rounded-full flex items-center justify-center">
-            <Utensils className="h-12 w-12 text-neutral-400" />
+          <div className="w-32 h-32 bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/20 dark:to-red-900/20 rounded-full flex items-center justify-center shadow-lg">
+            <Utensils className="h-16 w-16 text-orange-400" />
           </div>
           <div className="absolute -top-2 -right-2">
-            <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" />
+            <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" />
           </div>
         </div>
-        <h3 className="text-xl font-semibold mb-2">No food entries for today</h3>
-        <p className="text-center max-w-sm">
+        <h3 className="text-3xl font-bold mb-4 text-gradient-orange">No food entries for today</h3>
+        <p className="text-center max-w-md text-lg font-medium">
           Start logging your meals to see your personalized nutrition breakdown and track your macros!
         </p>
-        <div className="mt-6 flex space-x-2">
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+        <div className="mt-8 flex space-x-3">
+          <div className="w-4 h-4 bg-blue-400 rounded-full animate-bounce"></div>
+          <div className="w-4 h-4 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+          <div className="w-4 h-4 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
         </div>
       </div>
     );
@@ -115,7 +115,7 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
 
   return (
     <div className="relative">
-      <div className="h-80">
+      <div className="h-96">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <defs>
@@ -136,12 +136,12 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={70}
-              outerRadius={120}
+              innerRadius={80}
+              outerRadius={140}
               paddingAngle={3}
               dataKey="value"
               animationBegin={0}
-              animationDuration={1000}
+              animationDuration={1500}
             >
               {data.map((entry, index) => (
                 <Cell 
@@ -161,10 +161,10 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
       {/* Center text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="text-center">
-          <p className="text-3xl font-bold text-neutral-900 dark:text-white">
+          <p className="text-5xl font-bold text-gradient-fitness">
             {totalCalories}
           </p>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-lg text-neutral-500 dark:text-neutral-400 font-semibold">
             total calories
           </p>
         </div>

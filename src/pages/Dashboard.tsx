@@ -135,7 +135,7 @@ export default function Dashboard() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
-                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                   Welcome to Fit Species, {userProfile.name}!
                 </h1>
                 <div className="flex space-x-1">
@@ -145,22 +145,22 @@ export default function Dashboard() {
               </div>
               {/* Animated motivational banner */}
               <div className="relative h-10">
-                <div className="absolute inset-0 flex items-center transition-all duration-700 animate-fade-in" key={bannerIndex} aria-live="polite">
-                  <p className="text-xl text-neutral-600 dark:text-neutral-300 font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                <div className="absolute inset-0 flex items-center transition-all duration-1000 animate-fade-in" key={bannerIndex} aria-live="polite">
+                  <p className="text-2xl text-neutral-600 dark:text-neutral-300 font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                     {motivationalMessages[bannerIndex]}
                   </p>
                 </div>
               </div>
               {/* Streak indicator */}
               {streak > 1 && (
-                <div className="flex items-center space-x-3 mt-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl border border-yellow-200/50 dark:border-yellow-800/50" aria-label={`Streak: ${streak} days`}>
+                <div className="flex items-center space-x-3 mt-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-3xl border border-yellow-200/50 dark:border-yellow-800/50 shadow-lg hover:shadow-xl transition-all duration-300" aria-label={`Streak: ${streak} days`}>
                   <div className="flex items-center space-x-1">
-                    <Zap className="h-6 w-6 text-yellow-500 animate-bounce" />
-                    <span className="text-2xl">🔥</span>
+                    <Zap className="h-7 w-7 text-yellow-500 animate-bounce" />
+                    <span className="text-3xl animate-pulse">🔥</span>
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-yellow-700 dark:text-yellow-300">{streak} Day Streak!</p>
-                    <p className="text-sm text-yellow-600 dark:text-yellow-400">Keep the momentum going!</p>
+                    <p className="text-xl font-bold text-yellow-700 dark:text-yellow-300">{streak} Day Streak!</p>
+                    <p className="text-base text-yellow-600 dark:text-yellow-400 font-medium">Keep the momentum going!</p>
                   </div>
                 </div>
               )}
@@ -195,34 +195,34 @@ export default function Dashboard() {
               
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Calories</p>
-                  <p className="text-4xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-base font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Calories</p>
+                  <p className="text-5xl font-bold text-neutral-900 dark:text-white">
                     {Math.round(nutritionSummary.total_calories)}
                   </p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">
+                  <p className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
                     of {nutritionSummary.goal_calories} goal
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="p-4 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                    <Flame className="h-7 w-7 text-white" />
+                  <div className="p-5 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                    <Flame className="h-8 w-8 text-white" />
                   </div>
                   <div className="absolute -top-2 -right-2">
-                    <Zap className="h-5 w-5 text-yellow-400 animate-ping" />
+                    <Zap className="h-6 w-6 text-yellow-400 animate-ping" />
                   </div>
                 </div>
               </div>
               <div className="mt-6 relative z-10">
-                <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-4 overflow-hidden shadow-inner">
+                <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-5 overflow-hidden shadow-inner">
                   <div
-                    className="bg-gradient-to-r from-emerald-400 to-teal-500 h-4 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                    className="bg-gradient-to-r from-emerald-400 to-teal-500 h-5 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
                     style={{ width: `${getCalorieProgress()}%` }}
                   >
                     <div className="absolute inset-0 bg-white/30 animate-pulse rounded-full"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                   </div>
                 </div>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 font-medium">
+                <p className="text-base text-neutral-500 dark:text-neutral-400 mt-3 font-semibold">
                   {nutritionSummary.remaining_calories > 0
                     ? `${Math.round(nutritionSummary.remaining_calories)} remaining`
                     : `${Math.round(Math.abs(nutritionSummary.remaining_calories))} over goal`
@@ -235,11 +235,11 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
                 <div className="relative z-10">
-                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Protein</p>
-                  <p className="text-4xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
+                  <p className="text-base font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Protein</p>
+                  <p className="text-5xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                  <span className="text-white font-bold text-xl">P</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-2xl">P</span>
                 </div>
               </div>
             </div>
@@ -248,11 +248,11 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
                 <div className="relative z-10">
-                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Carbs</p>
-                  <p className="text-4xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
+                  <p className="text-base font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Carbs</p>
+                  <p className="text-5xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                  <span className="text-white font-bold text-xl">C</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-2xl">C</span>
                 </div>
               </div>
             </div>
@@ -261,11 +261,11 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
                 <div className="relative z-10">
-                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Fat</p>
-                  <p className="text-4xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
+                  <p className="text-base font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Fat</p>
+                  <p className="text-5xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                  <span className="text-white font-bold text-xl">F</span>
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-2xl">F</span>
                 </div>
               </div>
             </div>

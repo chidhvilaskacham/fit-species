@@ -27,11 +27,11 @@
   }
   
   .button-primary {
-    @apply bg-gradient-to-r from-mint-500 to-sky-500 hover:from-mint-600 hover:to-sky-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95;
+    @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
   }
   
   .button-secondary {
-    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-2 border-mint-200 dark:border-mint-700 text-mint-700 dark:text-mint-300 font-semibold py-3 px-6 rounded-2xl hover:bg-mint-50 dark:hover:bg-mint-900/20 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95;
+    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-2 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 font-bold py-4 px-8 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
   }
   
   .input-field {
@@ -57,6 +57,14 @@
   
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-float-slow {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 3s infinite;
   }
 }
 
@@ -84,10 +92,10 @@
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 20px rgba(251, 146, 60, 0.4);
+    box-shadow: 0 0 20px rgba(251, 146, 60, 0.4), 0 0 30px rgba(239, 68, 68, 0.2);
   }
   to {
-    box-shadow: 0 0 30px rgba(251, 146, 60, 0.6), 0 0 40px rgba(251, 146, 60, 0.3);
+    box-shadow: 0 0 30px rgba(251, 146, 60, 0.6), 0 0 40px rgba(239, 68, 68, 0.4), 0 0 50px rgba(251, 146, 60, 0.3);
   }
 }
 
@@ -171,12 +179,31 @@
 
 /* Focus styles */
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-mint-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900;
+  @apply focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900;
 }
 
 /* Loading skeleton */
 .skeleton {
-  @apply bg-gradient-to-r from-neutral-200 via-neutral-300 to-neutral-200 dark:from-neutral-700 dark:via-neutral-600 dark:to-neutral-700 animate-pulse;
+  @apply bg-gradient-to-r from-neutral-200 via-neutral-300 to-neutral-200 dark:from-neutral-700 dark:via-neutral-600 dark:to-neutral-700;
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* Enhanced glassmorphism */
+.glass-enhanced {
+  @apply bg-white/90 dark:bg-neutral-800/90 backdrop-blur-2xl border border-white/30 dark:border-neutral-700/40 shadow-2xl;
+}
+
+/* Improved hover states */
+.hover-lift {
+  @apply transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-2;
+}
+
+/* Better text gradients */
+.text-gradient-orange {
+  @apply bg-gradient-to-r from-orange-600 via-red-500 to-pink-500 bg-clip-text text-transparent;
+}
+
+.text-gradient-fitness {
+  @apply bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 bg-clip-text text-transparent;
 }

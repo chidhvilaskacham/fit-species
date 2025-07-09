@@ -72,7 +72,7 @@ export default function Layout() {
                   <input
                     type="text"
                     placeholder="Search exercises, foods, or workouts..."
-                    className="w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-neutral-700/80 backdrop-blur-sm border border-neutral-200/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all text-sm placeholder-neutral-400 dark:placeholder-neutral-500"
+                    className="w-full pl-12 pr-4 py-3 bg-white/90 dark:bg-neutral-700/90 backdrop-blur-sm border border-neutral-200/50 dark:border-neutral-600/50 rounded-2xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all text-sm placeholder-neutral-400 dark:placeholder-neutral-500 shadow-lg hover:shadow-xl"
                   />
                 </div>
               </div>

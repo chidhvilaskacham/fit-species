@@ -143,7 +143,7 @@ export default function Workouts() {
     setCurrentSet(1);
     setTimer(0);
     setIsTimerRunning(true);
-    toast.success(`Started ${template.name} workout!`);
+    toast.success(`🔥 Started ${template.name} workout! Let's go!`);
   };
 
   const completeSet = () => {
@@ -153,7 +153,7 @@ export default function Workouts() {
     if (currentSet < exercise.sets) {
       setCurrentSet(prev => prev + 1);
       setIsResting(true);
-      toast.success(`Set ${currentSet} completed! Rest for ${exercise.rest_seconds}s`);
+      toast.success(`💪 Set ${currentSet} completed! Rest for ${exercise.rest_seconds}s`);
       
       // Auto-advance after rest period
       setTimeout(() => {
@@ -165,7 +165,7 @@ export default function Workouts() {
         setCurrentExercise(prev => prev + 1);
         setCurrentSet(1);
         setIsResting(false);
-        toast.success(`${exercise.name} completed! Moving to next exercise.`);
+        toast.success(`🎯 ${exercise.name} completed! Moving to next exercise.`);
       } else {
         // Workout complete
         completeWorkout();
@@ -193,7 +193,7 @@ export default function Workouts() {
 
       if (error) throw error;
 
-      toast.success(`Workout completed! ${duration} minutes, ~${estimatedCalories} calories burned`);
+      toast.success(`🏆 Workout completed! ${duration} minutes, ~${estimatedCalories} calories burned`);
       setActiveWorkout(null);
       setIsTimerRunning(false);
       setTimer(0);
