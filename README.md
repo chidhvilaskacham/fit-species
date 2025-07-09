@@ -67,8 +67,12 @@ git clone https://github.com/YOUR_USERNAME/the-fit-species.git
 cd the-fit-species
 npm install
 npm run dev
+```
+Open http://localhost:5173 in your browser.
 
 
+📁 Folder Structure
+```bash
 src/
 ├── components/
 │   └── Header, Card, MealInput, HydrationTracker, etc.
@@ -79,18 +83,13 @@ src/
 ├── utils/
 ├── assets/
 └── App.jsx
-
+```
 
 ✅ To-Do (Roadmap)
  Barcode scanning input
-
  AI food image recognition
-
  Food inventory integration
-
  Google sign-in
-
  Data export (CSV / JSON / PDF)
-
  Backend (Supabase/Firebase/Express)
 
