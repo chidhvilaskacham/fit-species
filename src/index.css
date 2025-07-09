@@ -15,7 +15,7 @@
 
 @layer components {
   .glass-effect {
-    @apply bg-white/70 dark:bg-neutral-800/70 backdrop-blur-xl border border-white/20 dark:border-neutral-700/30;
+    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl border border-white/20 dark:border-neutral-700/30;
   }
   
   .gradient-text {
@@ -23,7 +23,7 @@
   }
   
   .card-hover {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:-translate-y-2;
   }
   
   .button-primary {
@@ -35,7 +35,7 @@
   }
   
   .input-field {
-    @apply w-full px-4 py-3 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:ring-2 focus:ring-mint-500 focus:border-mint-500 transition-all duration-300 placeholder-neutral-400 dark:placeholder-neutral-500;
+    @apply w-full px-4 py-3 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 placeholder-neutral-400 dark:placeholder-neutral-500 hover:shadow-lg;
   }
   
   .floating-element {
@@ -49,6 +49,14 @@
   
   .pulse-ring {
     animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s infinite linear;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
   }
 }
 
@@ -71,6 +79,15 @@
   100% {
     transform: scale(2.4);
     opacity: 0;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px rgba(251, 146, 60, 0.4);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(251, 146, 60, 0.6), 0 0 40px rgba(251, 146, 60, 0.3);
   }
 }
 

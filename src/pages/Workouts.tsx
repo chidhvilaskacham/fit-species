@@ -241,35 +241,38 @@ export default function Workouts() {
 
         {/* Active Workout */}
         {activeWorkout && (
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100/50 dark:border-gray-700/50 mb-8 animate-slide-up">
+          <div className="bg-white/90 backdrop-blur-sm dark:bg-gray-800/90 rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100/50 dark:border-gray-700/50 mb-8 animate-slide-up relative overflow-hidden">
+            {/* Active workout glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-red-500/5 to-orange-500/10 animate-pulse"></div>
+            
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <div className={`p-4 bg-gradient-to-br ${activeWorkout.color} rounded-2xl shadow-lg`}>
-                  <span className="text-2xl">{activeWorkout.icon}</span>
+                <div className={`p-5 bg-gradient-to-br ${activeWorkout.color} rounded-3xl shadow-xl animate-glow`}>
+                  <span className="text-3xl">{activeWorkout.icon}</span>
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{activeWorkout.name}</h2>
-                  <p className="text-gray-600 dark:text-gray-400">Exercise {currentExercise + 1} of {activeWorkout.exercises.length}</p>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{activeWorkout.name}</h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">Exercise {currentExercise + 1} of {activeWorkout.exercises.length}</p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-orange-600">{formatTime(timer)}</div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total Time</p>
+                <div className="text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{formatTime(timer)}</div>
+                <p className="text-lg text-gray-600 dark:text-gray-400 font-semibold">Total Time</p>
               </div>
             </div>
 
             {/* Current Exercise */}
-            <div className="bg-gradient-to-r from-orange-50/80 to-red-50/80 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl p-6 mb-6">
+            <div className="bg-gradient-to-r from-orange-50/90 to-red-50/90 dark:from-orange-900/30 dark:to-red-900/30 rounded-3xl p-8 mb-8 border border-orange-200/50 dark:border-orange-800/50 relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {activeWorkout.exercises[currentExercise].name}
                 </h3>
                 <div className="flex items-center space-x-4">
-                  <span className="bg-white/80 dark:bg-gray-700/80 px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-white/90 dark:bg-gray-700/90 px-4 py-2 rounded-full text-lg font-bold shadow-lg">
                     Set {currentSet} of {activeWorkout.exercises[currentExercise].sets}
                   </span>
                   {isResting && (
-                    <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+                    <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-lg font-bold animate-pulse shadow-lg">
                       Resting...
                     </span>
                   )}
@@ -279,25 +282,25 @@ export default function Workouts() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                 {activeWorkout.exercises[currentExercise].reps && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].reps}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Reps</div>
+                    <div className="text-4xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].reps}</div>
+                    <div className="text-lg text-gray-600 dark:text-gray-400 font-semibold">Reps</div>
                   </div>
                 )}
                 {activeWorkout.exercises[currentExercise].duration_seconds && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].duration_seconds}s</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Duration</div>
+                    <div className="text-4xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].duration_seconds}s</div>
+                    <div className="text-lg text-gray-600 dark:text-gray-400 font-semibold">Duration</div>
                   </div>
                 )}
                 {activeWorkout.exercises[currentExercise].weight && (
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].weight}lbs</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Weight</div>
+                    <div className="text-4xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].weight}lbs</div>
+                    <div className="text-lg text-gray-600 dark:text-gray-400 font-semibold">Weight</div>
                   </div>
                 )}
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].rest_seconds}s</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Rest</div>
+                  <div className="text-4xl font-bold text-orange-600">{activeWorkout.exercises[currentExercise].rest_seconds}s</div>
+                  <div className="text-lg text-gray-600 dark:text-gray-400 font-semibold">Rest</div>
                 </div>
               </div>
 
@@ -305,7 +308,7 @@ export default function Workouts() {
                 <button
                   onClick={completeSet}
                   disabled={isResting}
-                  className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-6 rounded-xl hover:from-orange-700 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 px-8 rounded-2xl hover:from-orange-700 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105"
                 >
                   {isResting ? 'Resting...' : 'Complete Set'}
                 </button>
@@ -315,7 +318,7 @@ export default function Workouts() {
                     setIsTimerRunning(false);
                     setTimer(0);
                   }}
-                  className="px-6 py-3 border-2 border-red-200 text-red-600 rounded-xl hover:bg-red-50 transition-colors"
+                  className="px-8 py-4 border-2 border-red-200 text-red-600 rounded-2xl hover:bg-red-50 transition-all duration-300 font-bold text-lg hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   End Workout
                 </button>
@@ -356,38 +359,41 @@ export default function Workouts() {
 
         {/* Workout Templates */}
         {!activeWorkout && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
             {workoutTemplates.map((template, index) => (
               <div
                 key={index}
-                className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-3xl shadow-xl p-6 border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up"
+                className="bg-white/90 backdrop-blur-sm dark:bg-gray-800/90 rounded-3xl shadow-xl p-8 border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 animate-slide-up group relative overflow-hidden"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
+                {/* Hover gradient overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${template.color.replace('from-', 'from-').replace('to-', 'to-')}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-4">
-                    <div className={`p-4 bg-gradient-to-br ${template.color} rounded-2xl shadow-lg`}>
-                      <span className="text-2xl">{template.icon}</span>
+                    <div className={`p-5 bg-gradient-to-br ${template.color} rounded-3xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
+                      <span className="text-3xl">{template.icon}</span>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{template.name}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 capitalize">{template.type} • {template.duration} min</p>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-orange-600 transition-colors duration-300">{template.name}</h3>
+                      <p className="text-lg text-gray-600 dark:text-gray-400 capitalize font-medium">{template.type} • {template.duration} min</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mb-6">
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Exercises:</h4>
+                  <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-4">Exercises:</h4>
                   <div className="space-y-2">
                     {template.exercises.slice(0, 3).map((exercise: Exercise, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between text-sm">
-                        <span className="text-gray-700 dark:text-gray-300">{exercise.name}</span>
-                        <span className="text-gray-500 dark:text-gray-400">
+                      <div key={idx} className="flex items-center justify-between">
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">{exercise.name}</span>
+                        <span className="text-gray-500 dark:text-gray-400 font-semibold">
                           {exercise.sets} × {exercise.reps || `${exercise.duration_seconds}s`}
                         </span>
                       </div>
                     ))}
                     {template.exercises.length > 3 && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                         +{template.exercises.length - 3} more exercises
                       </p>
                     )}
@@ -396,9 +402,9 @@ export default function Workouts() {
 
                 <button
                   onClick={() => startWorkout(template)}
-                  className={`w-full bg-gradient-to-r ${template.color} text-white py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-200 font-semibold transform hover:-translate-y-0.5 flex items-center justify-center space-x-2`}
+                  className={`w-full bg-gradient-to-r ${template.color} text-white py-4 px-8 rounded-2xl hover:shadow-xl transition-all duration-300 font-bold text-lg transform hover:-translate-y-1 hover:scale-105 flex items-center justify-center space-x-3 relative z-10`}
                 >
-                  <Play className="h-4 w-4" />
+                  <Play className="h-6 w-6" />
                   <span>Start Workout</span>
                 </button>
               </div>
@@ -408,47 +414,48 @@ export default function Workouts() {
 
         {/* Recent Workouts */}
         {!activeWorkout && (
-          <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-800/80 rounded-3xl shadow-xl p-6 border border-gray-100/50 dark:border-gray-700/50 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-              <Trophy className="h-5 w-5 mr-2" />
+          <div className="bg-white/90 backdrop-blur-sm dark:bg-gray-800/90 rounded-3xl shadow-xl p-8 border border-gray-100/50 dark:border-gray-700/50 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center">
+              <Trophy className="h-7 w-7 mr-3 text-yellow-500" />
               Recent Workouts
+              <Sparkles className="h-6 w-6 ml-2 text-yellow-400 animate-pulse" />
             </h2>
 
             {workoutSessions.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4 opacity-20">🏋️</div>
-                <p className="text-lg font-medium text-gray-500 dark:text-gray-400 mb-2">No workouts completed yet</p>
-                <p className="text-sm text-gray-400 dark:text-gray-500">Start your first workout above!</p>
+              <div className="text-center py-16">
+                <div className="text-8xl mb-6 opacity-20">🏋️</div>
+                <p className="text-2xl font-bold text-gray-500 dark:text-gray-400 mb-3">No workouts completed yet</p>
+                <p className="text-lg text-gray-400 dark:text-gray-500">Start your first workout above!</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {workoutSessions.map((session) => (
                   <div
                     key={session.id}
-                    className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50/80 to-gray-100/80 dark:from-gray-700/80 dark:to-gray-800/80 rounded-xl border border-gray-200/50 dark:border-gray-600/50"
+                    className="flex items-center justify-between p-6 bg-gradient-to-r from-gray-50/90 to-gray-100/90 dark:from-gray-700/90 dark:to-gray-800/90 rounded-2xl border border-gray-200/50 dark:border-gray-600/50 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl shadow-lg">
-                        <Dumbbell className="h-5 w-5 text-white" />
+                      <div className="p-4 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl shadow-lg">
+                        <Dumbbell className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white capitalize">
+                        <h4 className="font-bold text-lg text-gray-900 dark:text-white capitalize">
                           {session.workout_type} Workout
                         </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-gray-600 dark:text-gray-400 font-medium">
                           {format(new Date(session.date), 'MMM d, yyyy')}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="flex items-center space-x-4 text-sm">
+                      <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-1">
-                          <Timer className="h-4 w-4 text-gray-500" />
-                          <span>{session.duration_minutes} min</span>
+                          <Timer className="h-5 w-5 text-gray-500" />
+                          <span className="font-semibold">{session.duration_minutes} min</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <Flame className="h-4 w-4 text-orange-500" />
-                          <span>{session.calories_burned} cal</span>
+                          <Flame className="h-5 w-5 text-orange-500" />
+                          <span className="font-semibold">{session.calories_burned} cal</span>
                         </div>
                       </div>
                     </div>

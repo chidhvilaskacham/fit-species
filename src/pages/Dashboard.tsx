@@ -131,7 +131,7 @@ export default function Dashboard() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8 animate-fade-in-scale">
+        <div className="mb-10 animate-fade-in-scale">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
@@ -145,17 +145,23 @@ export default function Dashboard() {
               </div>
               {/* Animated motivational banner */}
               <div className="relative h-10">
-                <div className="absolute inset-0 flex items-center transition-opacity duration-700 animate-fade-in" key={bannerIndex} aria-live="polite">
-                  <p className="text-lg text-neutral-600 dark:text-neutral-300 font-semibold">
+                <div className="absolute inset-0 flex items-center transition-all duration-700 animate-fade-in" key={bannerIndex} aria-live="polite">
+                  <p className="text-xl text-neutral-600 dark:text-neutral-300 font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                     {motivationalMessages[bannerIndex]}
                   </p>
                 </div>
               </div>
               {/* Streak indicator */}
               {streak > 1 && (
-                <div className="flex items-center space-x-2 mt-1" aria-label={`Streak: ${streak} days`}>
-                  <Zap className="h-5 w-5 text-yellow-400 animate-pulse" />
-                  <span className="text-emerald-600 dark:text-emerald-300 font-bold">{streak} day streak!</span>
+                <div className="flex items-center space-x-3 mt-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl border border-yellow-200/50 dark:border-yellow-800/50" aria-label={`Streak: ${streak} days`}>
+                  <div className="flex items-center space-x-1">
+                    <Zap className="h-6 w-6 text-yellow-500 animate-bounce" />
+                    <span className="text-2xl">🔥</span>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-yellow-700 dark:text-yellow-300">{streak} Day Streak!</p>
+                    <p className="text-sm text-yellow-600 dark:text-yellow-400">Keep the momentum going!</p>
+                  </div>
                 </div>
               )}
               <p className="text-neutral-500 dark:text-neutral-400">
@@ -181,38 +187,42 @@ export default function Dashboard() {
 
         {/* Nutrition Summary Cards */}
         {nutritionSummary && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {/* Calories Card */}
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group" tabIndex={0} aria-label="Calories summary">
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group relative overflow-hidden" tabIndex={0} aria-label="Calories summary">
+              {/* Background gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Calories</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Calories</p>
+                  <p className="text-4xl font-bold text-neutral-900 dark:text-white">
                     {Math.round(nutritionSummary.total_calories)}
                   </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">
                     of {nutritionSummary.goal_calories} goal
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="p-4 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg">
-                    <Flame className="h-6 w-6 text-white" />
+                  <div className="p-4 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                    <Flame className="h-7 w-7 text-white" />
                   </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Zap className="h-4 w-4 text-yellow-400 animate-ping" />
+                  <div className="absolute -top-2 -right-2">
+                    <Zap className="h-5 w-5 text-yellow-400 animate-ping" />
                   </div>
                 </div>
               </div>
-              <div className="mt-4">
-                <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-3 overflow-hidden">
+              <div className="mt-6 relative z-10">
+                <div className="bg-neutral-200 dark:bg-neutral-700 rounded-full h-4 overflow-hidden shadow-inner">
                   <div
-                    className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-1000 ease-out relative"
+                    className="bg-gradient-to-r from-emerald-400 to-teal-500 h-4 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
                     style={{ width: `${getCalorieProgress()}%` }}
                   >
-                    <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full"></div>
+                    <div className="absolute inset-0 bg-white/30 animate-pulse rounded-full"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                   </div>
                 </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 font-medium">
                   {nutritionSummary.remaining_calories > 0
                     ? `${Math.round(nutritionSummary.remaining_calories)} remaining`
                     : `${Math.round(Math.abs(nutritionSummary.remaining_calories))} over goal`
@@ -221,38 +231,41 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group relative overflow-hidden" style={{ animationDelay: '0.1s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Protein</p>
-                  <p className="text-3xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
+                <div className="relative z-10">
+                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Protein</p>
+                  <p className="text-4xl font-bold text-blue-600">{Math.round(nutritionSummary.total_protein)}g</p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">P</span>
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-xl">P</span>
                 </div>
               </div>
             </div>
 
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group relative overflow-hidden" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Carbs</p>
-                  <p className="text-3xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
+                <div className="relative z-10">
+                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Carbs</p>
+                  <p className="text-4xl font-bold text-orange-600">{Math.round(nutritionSummary.total_carbs)}g</p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">C</span>
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-xl">C</span>
                 </div>
               </div>
             </div>
 
-            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
+            <div className="glass-effect rounded-3xl shadow-xl p-6 border border-white/20 dark:border-neutral-700/30 card-hover animate-slide-in-left group relative overflow-hidden" style={{ animationDelay: '0.3s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">Fat</p>
-                  <p className="text-3xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
+                <div className="relative z-10">
+                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Fat</p>
+                  <p className="text-4xl font-bold text-purple-600">{Math.round(nutritionSummary.total_fat)}g</p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">F</span>
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <span className="text-white font-bold text-xl">F</span>
                 </div>
               </div>
             </div>
@@ -261,13 +274,20 @@ export default function Dashboard() {
 
         {/* Nutrition Chart */}
         {nutritionSummary && (
-          <div className="glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30 mb-8 card-hover animate-slide-in-bottom" style={{ animationDelay: '0.4s' }}>
-            <h2 className="text-xl sm:text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
-              <Activity className="h-6 w-6 mr-3 text-emerald-500" />
+          <div className="glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30 mb-10 card-hover animate-slide-in-bottom relative overflow-hidden" style={{ animationDelay: '0.4s' }}>
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-emerald-500/10 to-teal-500/10"></div>
+            </div>
+            
+            <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white mb-8 flex items-center relative z-10">
+              <Activity className="h-8 w-8 mr-4 text-emerald-500" />
               Macronutrient Breakdown
-              <Sparkles className="h-5 w-5 ml-2 text-yellow-400 animate-pulse" />
+              <Sparkles className="h-6 w-6 ml-3 text-yellow-400 animate-pulse" />
             </h2>
-            <NutritionChart nutritionSummary={nutritionSummary} />
+            <div className="relative z-10">
+              <NutritionChart nutritionSummary={nutritionSummary} />
+            </div>
           </div>
         )}
 
@@ -288,36 +308,39 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-12 text-center animate-slide-in-bottom" style={{ animationDelay: '0.9s' }}>
-          <div className="inline-flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30">
+        <div className="mt-16 text-center animate-slide-in-bottom" style={{ animationDelay: '0.9s' }}>
+          <div className="inline-flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8 glass-effect rounded-3xl shadow-xl p-8 sm:p-10 border border-white/20 dark:border-neutral-700/30 relative overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-emerald-500/5"></div>
+            
             <div className="flex items-center space-x-3">
-              <Target className="h-6 w-6 text-emerald-500" />
-              <span className="text-neutral-700 dark:text-neutral-300 font-semibold text-lg">Quick Actions:</span>
+              <Target className="h-8 w-8 text-emerald-500" />
+              <span className="text-neutral-700 dark:text-neutral-300 font-bold text-xl">Quick Actions:</span>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 relative z-10">
               <a
                 href="/workouts"
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 inline-flex items-center justify-center space-x-3 min-w-[180px]"
                 aria-label="Start a workout session"
               >
-                <Activity className="h-5 w-5" />
-                <span>Start Workout</span>
+                <Activity className="h-6 w-6" />
+                <span className="text-lg">Start Workout</span>
               </a>
               <a
                 href="/add-food"
-                className="button-primary inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 inline-flex items-center justify-center space-x-3 min-w-[180px]"
                 aria-label="Add food to your daily log"
               >
-                <Plus className="h-5 w-5" />
-                <span>Log Nutrition</span>
+                <Plus className="h-6 w-6" />
+                <span className="text-lg">Log Nutrition</span>
               </a>
               <a
                 href="/progress"
-                className="button-secondary inline-flex items-center justify-center space-x-2 min-w-[160px]"
+                className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-2 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 font-bold py-4 px-8 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95 inline-flex items-center justify-center space-x-3 min-w-[180px]"
                 aria-label="View your progress and trends"
               >
-                <TrendingUp className="h-5 w-5" />
-                <span>View Progress</span>
+                <TrendingUp className="h-6 w-6" />
+                <span className="text-lg">View Progress</span>
               </a>
             </div>
           </div>
