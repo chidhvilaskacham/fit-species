@@ -8,6 +8,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import Layout from './components/Layout';
 
 // Lazy-loaded pages
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const ProfileSetup = lazy(() => import('./pages/ProfileSetup'));
@@ -21,6 +22,9 @@ const Goals = lazy(() => import('./pages/Goals'));
 const ConnectionRequired = lazy(() => import('./components/ConnectionRequired'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const BarcodeScanner = lazy(() => import('./pages/BarcodeScanner'));
+const FoodSearch = lazy(() => import('./pages/FoodSearch'));
+const History = lazy(() => import('./pages/History'));
 
 function AppRoutes() {
   const { user, userProfile, loading } = useAuth();
@@ -29,15 +33,16 @@ function AppRoutes() {
     return <LoadingSpinner message="Loading your profile" />;
   }
 
-  // Not authenticated - show auth pages
+  // Not authenticated - show public pages
   if (!user) {
     return (
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
   }
@@ -55,6 +60,7 @@ function AppRoutes() {
   // Authenticated with profile - show main app
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Navigate to="/dashboard" replace />} />
       <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
       <Route path="/forgot-password" element={<Navigate to="/dashboard" replace />} />
@@ -62,11 +68,13 @@ function AppRoutes() {
       <Route path="/profile-setup" element={<Navigate to="/dashboard" replace />} />
       
       <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="workouts" element={<Workouts />} />
         <Route path="add-food" element={<AddFood />} />
+        <Route path="barcode-scanner" element={<BarcodeScanner />} />
+        <Route path="food-search" element={<FoodSearch />} />
         <Route path="progress" element={<Progress />} />
+        <Route path="history" element={<History />} />
         <Route path="hydration" element={<Hydration />} />
         <Route path="goals" element={<Goals />} />
         <Route path="settings" element={<Settings />} />
@@ -91,7 +99,7 @@ function App() {
   if (isCheckingConnection) {
     return (
       <ThemeProvider>
-        <LoadingSpinner message="Starting NutriTrack" />
+        <LoadingSpinner message="Starting The Fit Species" />
       </ThemeProvider>
     );
   }
