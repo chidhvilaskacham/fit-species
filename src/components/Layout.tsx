@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, PlusCircle, TrendingUp, Settings, LogOut, Activity, Menu, X, Sparkles, Droplets, Target, Bell, Search, User } from 'lucide-react';
+import { Home, PlusCircle, TrendingUp, Settings, LogOut, Activity, Menu, X, Sparkles, Droplets, Target, Bell, Search, User, Camera, History } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useState } from 'react';
@@ -17,8 +17,11 @@ export default function Layout() {
   const navigationItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'from-orange-500 to-red-500' },
     { path: '/workouts', icon: Activity, label: 'Workouts', color: 'from-purple-500 to-pink-500' },
-    { path: '/add-food', icon: PlusCircle, label: 'Nutrition', color: 'from-green-500 to-emerald-500' },
+    { path: '/add-food', icon: PlusCircle, label: 'Add Food', color: 'from-green-500 to-emerald-500' },
+    { path: '/food-search', icon: Search, label: 'Food Search', color: 'from-blue-500 to-cyan-500' },
+    { path: '/barcode-scanner', icon: Camera, label: 'Scan Food', color: 'from-purple-500 to-indigo-500' },
     { path: '/progress', icon: TrendingUp, label: 'Progress', color: 'from-orange-500 to-red-500' },
+    { path: '/history', icon: History, label: 'History', color: 'from-indigo-500 to-purple-500' },
     { path: '/hydration', icon: Droplets, label: 'Hydration', color: 'from-blue-500 to-indigo-500' },
     { path: '/goals', icon: Target, label: 'Goals', color: 'from-purple-500 to-pink-500' },
     { path: '/settings', icon: Settings, label: 'Settings', color: 'from-gray-500 to-gray-600' },

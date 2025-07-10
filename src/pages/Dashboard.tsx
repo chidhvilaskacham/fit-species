@@ -6,6 +6,7 @@ import { useFood } from '../contexts/FoodContext';
 import { NutritionSummary } from '../types';
 import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
+import DailyTipCard from '../components/DailyTipCard';
 
 const calculateStreak = (foodEntries: { date: string }[]): number => {
   if (foodEntries.length === 0) {
@@ -273,6 +274,11 @@ export default function Dashboard() {
         )}
 
         {/* Nutrition Chart */}
+        {/* Daily Tip Card */}
+        <div className="mb-10 animate-slide-in-bottom" style={{ animationDelay: '0.35s' }}>
+          <DailyTipCard />
+        </div>
+
         {nutritionSummary && (
           <div className="glass-effect rounded-3xl shadow-xl p-6 sm:p-8 border border-white/20 dark:border-neutral-700/30 mb-10 card-hover animate-slide-in-bottom relative overflow-hidden" style={{ animationDelay: '0.4s' }}>
             {/* Background pattern */}
