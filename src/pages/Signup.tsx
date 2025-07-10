@@ -56,7 +56,7 @@ export default function Signup() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success('Account created successfully! Let\'s set up your profile.');
+      toast.success('Welcome to Fit Species! Let\'s set up your profile.');
       navigate('/profile-setup');
     }
     
@@ -80,7 +80,8 @@ export default function Signup() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Join NutriTrack</h1>
-          <p className="text-neutral-600 dark:text-neutral-300">Start your smart nutrition journey today</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Join Fit Species</h1>
+          <p className="text-neutral-600 dark:text-neutral-300">Start your complete fitness journey today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

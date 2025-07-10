@@ -120,7 +120,7 @@ try {
 }
 
 function createMockClient() {
-  const mockError = { message: 'Supabase not connected. Please check your .env configuration and project status.' };
+  const mockError = { message: 'Database not connected. Please check your .env configuration and project status.' };
   
   return {
     auth: {

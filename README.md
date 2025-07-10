@@ -1,6 +1,6 @@
-# The Fit Species 🥗 – Smart Nutrition & Wellness Tracker
+# Fit Species 💪 – Complete Fitness & Nutrition Platform
 
-**The Fit Species** is a modern, mobile-responsive web app designed to help users monitor their daily nutrition, hydration, and health goals through a streamlined dashboard.
+**Fit Species** is a modern, mobile-responsive fitness platform designed to help users track workouts, monitor nutrition, manage hydration, and achieve their fitness goals through a comprehensive dashboard.
 
 🔗 **Live App**: [https://thefitspecies.netlify.app](https://thefitspecies.netlify.app)
 
@@ -10,6 +10,12 @@
 
 - 🔐 **Authentication**
   - Secure Signup, Login, and Forgot Password flows
+
+- 🏋️ **Workout Tracking**
+  - Pre-built workout templates (Strength, HIIT, Flexibility)
+  - Real-time workout timer and set tracking
+  - Exercise progress monitoring
+  - Workout history and analytics
 
 - 🍽️ **Meal Logging**
   - Add food to Breakfast, Lunch, Dinner, and Snacks
@@ -29,12 +35,14 @@
 
 - 🎯 **Goal Setting**
   - Custom calorie and weight goals
+  - Fitness milestone tracking
   - View completion streaks (coming soon)
 
 - 🧠 **Planned Features**
-  - Barcode scanner
-  - Food inventory search
-  - AI food image detection
+  - Advanced workout builder
+  - Personal trainer matching
+  - Community challenges
+  - Wearable device integration
   - Export to CSV/JSON
 
 ---
@@ -42,9 +50,11 @@
 ## 🧪 Tech Stack
 
 - **Frontend**: React, Tailwind CSS  
+- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
 - **State Management**: Context API  
 - **Routing**: React Router DOM  
-- **Authentication**: Form validation + localStorage mock  
+- **Authentication**: Supabase Auth with email/password
+- **Charts**: Recharts for data visualization
 - **Deployment**: Netlify
 
 ---
@@ -52,8 +62,8 @@
 ## 🛠️ Getting Started
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/the-fit-species.git
-cd the-fit-species
+git clone https://github.com/YOUR_USERNAME/fit-species.git
+cd fit-species
 npm install
 npm run dev
 ```
@@ -64,22 +74,25 @@ Open http://localhost:5173 in your browser.
 ```bash
 src/
 ├── components/
-│   └── Header, Card, MealInput, HydrationTracker, etc.
+│   └── Layout, MealSection, NutritionChart, LoadingSpinner, etc.
 ├── pages/
-│   └── Login, Signup, Dashboard, Progress
+│   └── Login, Signup, Dashboard, Workouts, Progress, Settings, etc.
 ├── context/
-│   └── AuthContext.js, AppContext.js
+│   └── AuthContext, FoodContext, ThemeContext
+├── data/
+│   └── commonFoods.ts
 ├── utils/
 ├── assets/
-└── App.jsx
+└── App.tsx
 ```
 
 ✅ To-Do (Roadmap)
 ```
- Barcode scanning input
- AI food image recognition
- Food inventory integration
- Google sign-in
+ Advanced workout builder
+ Personal trainer booking system
+ Community features and challenges
+ Wearable device integration (Fitbit, Apple Watch)
+ Social sharing and progress photos
  Data export (CSV / JSON / PDF)
- Backend (Supabase/Firebase/Express)
+ Mobile app development
 ```

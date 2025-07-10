@@ -133,7 +133,7 @@ export default function ProfileSetup() {
         allergies: formData.allergies.split(',').map(a => a.trim()).filter(a => a),
       });
       
-      toast.success('Profile setup complete! Welcome to NutriTrack!');
+      toast.success('Profile setup complete! Welcome to Fit Species!');
       
       setTimeout(() => {
         navigate('/dashboard', { replace: true });
@@ -163,7 +163,7 @@ export default function ProfileSetup() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Complete Your Profile</h1>
-          <p className="text-neutral-600 dark:text-neutral-300">Let's personalize your nutrition journey with NutriTrack</p>
+          <p className="text-neutral-600 dark:text-neutral-300">Let's personalize your fitness journey with Fit Species</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">

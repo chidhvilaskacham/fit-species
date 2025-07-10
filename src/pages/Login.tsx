@@ -21,7 +21,7 @@ export default function Login() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success('Welcome back to NutriTrack!');
+      toast.success('Welcome back to Fit Species!');
       navigate('/dashboard');
     }
     
@@ -45,7 +45,7 @@ export default function Login() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Welcome Back</h1>
-          <p className="text-neutral-600 dark:text-neutral-300">Sign in to continue your nutrition journey</p>
+          <p className="text-neutral-600 dark:text-neutral-300">Sign in to continue your fitness journey</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -123,7 +123,7 @@ export default function Login() {
                 <div className="w-full border-t border-neutral-300/50 dark:border-neutral-600/50"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white/80 dark:bg-neutral-800/80 text-neutral-500 dark:text-neutral-400 backdrop-blur-sm">New to NutriTrack?</span>
+                <span className="px-2 bg-white/80 dark:bg-neutral-800/80 text-neutral-500 dark:text-neutral-400 backdrop-blur-sm">New to Fit Species?</span>
               </div>
             </div>
             
