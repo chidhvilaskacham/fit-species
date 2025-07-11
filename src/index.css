@@ -15,7 +15,7 @@
 
 @layer components {
   .glass-effect {
-    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-xl border border-white/20 dark:border-neutral-700/30;
+    @apply bg-white/90 dark:bg-neutral-800/90 backdrop-blur-xl border border-white/30 dark:border-neutral-700/40 shadow-xl;
   }
   
   .gradient-text {
@@ -23,19 +23,19 @@
   }
   
   .card-hover {
-    @apply transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:-translate-y-2;
+    @apply transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1;
   }
   
   .button-primary {
-    @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
+    @apply bg-gradient-to-r from-mint-500 to-sky-500 hover:from-mint-600 hover:to-sky-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
   }
   
   .button-secondary {
-    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-2 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-300 font-bold py-4 px-8 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
+    @apply bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border-2 border-mint-200 dark:border-mint-700 text-mint-700 dark:text-mint-300 font-bold py-4 px-8 rounded-2xl hover:bg-mint-50 dark:hover:bg-mint-900/20 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
   }
   
   .input-field {
-    @apply w-full px-4 py-3 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 placeholder-neutral-400 dark:placeholder-neutral-500 hover:shadow-lg;
+    @apply w-full px-4 py-3 bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:ring-2 focus:ring-mint-500 focus:border-mint-500 transition-all duration-300 placeholder-neutral-400 dark:placeholder-neutral-500 hover:shadow-lg;
   }
   
   .floating-element {
