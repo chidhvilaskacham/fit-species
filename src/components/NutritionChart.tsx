@@ -12,7 +12,7 @@ interface NutritionChartProps {
 }
 
 export default function NutritionChart({ nutritionSummary }: NutritionChartProps) {
-  const data = [
+  const data = React.useMemo(() => [
     {
       name: 'Protein',
       value: Math.round(Number(nutritionSummary.total_protein) * CALORIES_PER_GRAM_PROTEIN),
@@ -34,9 +34,12 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
       color: '#8B5CF6',
       gradient: 'from-purple-400 to-purple-600',
     },
-  ];
+  ], [nutritionSummary]);
 
-  const totalCalories = Math.round(Number(nutritionSummary.total_calories));
+  const totalCalories = React.useMemo(() => 
+    Math.round(Number(nutritionSummary.total_calories)), 
+    [nutritionSummary.total_calories]
+  );
 
   interface CustomTooltipProps {
     active?: boolean;
@@ -47,7 +50,7 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="glass-effect border border-white/20 dark:border-neutral-700/30 rounded-2xl p-4 shadow-xl backdrop-blur-xl">
+        <div className="bg-white/95 dark:bg-gray-800/95 border border-gray-200 dark:border-gray-700 rounded-xl p-3 shadow-lg">
           <div className="flex items-center space-x-2 mb-2">
             <div 
               className="w-3 h-3 rounded-full"
@@ -74,7 +77,7 @@ export default function NutritionChart({ nutritionSummary }: NutritionChartProps
   const CustomLegend = ({ payload }: CustomLegendProps) => {
     return (
       <div className="flex justify-center space-x-6 mt-6">
-        {payload?.map((entry: { color: string; value: string; payload: { grams: number } }, index: number) => (
+        {payload?.map((entry, index: number) => (
           <div key={index} className="flex items-center space-x-2">
             <div
               className="w-3 h-3 rounded-full shadow-sm"

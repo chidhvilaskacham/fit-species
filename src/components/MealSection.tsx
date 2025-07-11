@@ -26,10 +26,13 @@ export default function MealSection({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const totalCalories = entries.reduce((sum, entry) => sum + Number(entry.calories), 0);
-  const totalProtein = entries.reduce((sum, entry) => sum + Number(entry.protein), 0);
-  const totalCarbs = entries.reduce((sum, entry) => sum + Number(entry.carbs), 0);
-  const totalFat = entries.reduce((sum, entry) => sum + Number(entry.fat), 0);
+  // Memoize expensive calculations
+  const { totalCalories, totalProtein, totalCarbs, totalFat } = React.useMemo(() => ({
+    totalCalories: entries.reduce((sum, entry) => sum + Number(entry.calories), 0),
+    totalProtein: entries.reduce((sum, entry) => sum + Number(entry.protein), 0),
+    totalCarbs: entries.reduce((sum, entry) => sum + Number(entry.carbs), 0),
+    totalFat: entries.reduce((sum, entry) => sum + Number(entry.fat), 0),
+  }), [entries]);
 
   const handleDeleteEntry = async (entryId: string) => {
     setDeletingId(entryId);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { 
   Activity, 
   Smartphone, 
@@ -118,6 +118,7 @@ const howItWorksSteps = [
 export default function LandingPage() {
   const [currentQuote, setCurrentQuote] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setIsVisible(true);
@@ -127,7 +128,7 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const containerVariants = {
+  const containerVariants = prefersReducedMotion ? {} : {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -137,7 +138,7 @@ export default function LandingPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants = prefersReducedMotion ? {} : {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -444,7 +445,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              whileInView={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
@@ -482,13 +483,13 @@ export default function LandingPage() {
             <motion.div 
               className="relative"
               initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              whileInView={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
               <motion.div 
                 className="relative z-10"
-                animate={{ 
+                animate={prefersReducedMotion ? {} : { 
                   y: [0, -10, 0],
                   rotate: [0, 2, 0]
                 }}
@@ -517,8 +518,8 @@ export default function LandingPage() {
                       <div className="w-full bg-neutral-200 rounded-full h-2">
                         <motion.div 
                           className="bg-gradient-to-r from-mint-400 to-sky-500 h-2 rounded-full"
-                          initial={{ width: 0 }}
-                          whileInView={{ width: "80%" }}
+                          initial={prefersReducedMotion ? { width: "80%" } : { width: 0 }}
+                          whileInView={prefersReducedMotion ? {} : { width: "80%" }}
                           transition={{ duration: 1.5, delay: 0.5 }}
                           viewport={{ once: true }}
                         />
@@ -570,7 +571,7 @@ export default function LandingPage() {
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
+                      whileInView={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3, delay: i * 0.1 }}
                       viewport={{ once: true }}
                     >

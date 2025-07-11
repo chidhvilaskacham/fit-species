@@ -8,7 +8,7 @@ import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
 import DailyTipCard from '../components/DailyTipCard';
 
-const calculateStreak = (foodEntries: { date: string }[]): number => {
+const calculateStreak = React.memo((foodEntries: { date: string }[]): number => {
   if (foodEntries.length === 0) {
     return 0;
   }
@@ -38,7 +38,7 @@ const calculateStreak = (foodEntries: { date: string }[]): number => {
   }
 
   return streak;
-};
+});
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
@@ -46,6 +46,14 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [nutritionSummary, setNutritionSummary] = useState<NutritionSummary | null>(null);
   const [streak, setStreak] = useState(0);
+
+  // Memoize expensive calculations
+  const mealTypes = React.useMemo(() => [
+    { type: 'breakfast' as const, label: 'Breakfast', icon: '🌅', gradient: 'from-yellow-400 to-orange-500' },
+    { type: 'lunch' as const, label: 'Lunch', icon: '☀️', gradient: 'from-emerald-400 to-teal-500' },
+    { type: 'dinner' as const, label: 'Dinner', icon: '🌙', gradient: 'from-purple-400 to-pink-500' },
+    { type: 'snacks' as const, label: 'Snacks', icon: '🍿', gradient: 'from-pink-400 to-red-500' },
+  ], []);
 
   useEffect(() => {
     if (userProfile) {
@@ -55,9 +63,8 @@ export default function Dashboard() {
   }, [userProfile, selectedDate, fetchFoodEntries]);
 
   useEffect(() => {
-    if (foodEntries.length > 0) {
-      setStreak(calculateStreak(foodEntries));
-    }
+    const newStreak = calculateStreak(foodEntries);
+    setStreak(newStreak);
   }, [foodEntries]);
 
   const calculateNutritionSummary = React.useCallback(() => {
@@ -80,13 +87,6 @@ export default function Dashboard() {
   useEffect(() => {
     calculateNutritionSummary();
   }, [foodEntries, userProfile, calculateNutritionSummary]);
-
-  const mealTypes = [
-    { type: 'breakfast' as const, label: 'Breakfast', icon: '🌅', gradient: 'from-yellow-400 to-orange-500' },
-    { type: 'lunch' as const, label: 'Lunch', icon: '☀️', gradient: 'from-emerald-400 to-teal-500' },
-    { type: 'dinner' as const, label: 'Dinner', icon: '🌙', gradient: 'from-purple-400 to-pink-500' },
-    { type: 'snacks' as const, label: 'Snacks', icon: '🍿', gradient: 'from-pink-400 to-red-500' },
-  ];
 
   const getCalorieProgress = () => {
     if (!nutritionSummary) return 0;

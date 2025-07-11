@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* GPU acceleration for animations */
+.animate-float,
+.floating-element,
+.animate-bounce,
+.animate-pulse {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -17,6 +43,10 @@
   .glass-effect {
     @apply bg-white/90 dark:bg-neutral-800/90 backdrop-blur-xl border border-white/30 dark:border-neutral-700/40 shadow-xl;
   }
+
+  .glass-effect-light {
+    @apply bg-white/95 dark:bg-neutral-800/95 backdrop-blur-sm border border-white/40 dark:border-neutral-700/50 shadow-lg;
+  }
   
   .gradient-text {
     @apply bg-gradient-to-r from-mint-600 via-sky-600 to-cyan-600 bg-clip-text text-transparent;
@@ -24,6 +54,10 @@
   
   .card-hover {
     @apply transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:-translate-y-1;
+  }
+
+  .card-hover-light {
+    @apply transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:-translate-y-0.5;
   }
   
   .button-primary {

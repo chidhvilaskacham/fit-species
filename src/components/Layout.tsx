@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, PlusCircle, TrendingUp, Settings, LogOut, Activity, Menu, X, Sparkles, Droplets, Target, Bell, Search, User, Camera, History } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 
 export default function Layout() {
@@ -14,7 +14,7 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const navigationItems = [
+  const navigationItems = useMemo(() => [
     { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'from-orange-500 to-red-500' },
     { path: '/workouts', icon: Activity, label: 'Workouts', color: 'from-purple-500 to-pink-500' },
     { path: '/add-food', icon: PlusCircle, label: 'Add Food', color: 'from-green-500 to-emerald-500' },
@@ -25,7 +25,7 @@ export default function Layout() {
     { path: '/hydration', icon: Droplets, label: 'Hydration', color: 'from-blue-500 to-indigo-500' },
     { path: '/goals', icon: Target, label: 'Goals', color: 'from-purple-500 to-pink-500' },
     { path: '/settings', icon: Settings, label: 'Settings', color: 'from-gray-500 to-gray-600' },
-  ];
+  ], []);
 
   const handleSignOut = async () => {
     await signOut();
