@@ -8,7 +8,7 @@ import NutritionChart from '../components/NutritionChart';
 import MealSection from '../components/MealSection';
 import DailyTipCard from '../components/DailyTipCard';
 
-const calculateStreak = React.memo((foodEntries: { date: string }[]): number => {
+const calculateStreak = (foodEntries: { date: string }[]): number => {
   if (foodEntries.length === 0) {
     return 0;
   }
@@ -38,7 +38,7 @@ const calculateStreak = React.memo((foodEntries: { date: string }[]): number => 
   }
 
   return streak;
-});
+};
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
